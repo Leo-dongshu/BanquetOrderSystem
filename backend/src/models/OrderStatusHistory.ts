@@ -47,6 +47,9 @@ OrderStatusHistory.init({
   updatedAt: false
 });
 
+<<<<<<< HEAD
 // 关联关系将在需要时通过其他方式处理
 
+=======
+>>>>>>> 9625cf02ebc61d1105e524ea062b1861859de93d
 export default OrderStatusHistory;

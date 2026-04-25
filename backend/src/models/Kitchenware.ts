@@ -56,4 +56,8 @@ Kitchenware.init({
   updatedAt: 'updated_at'
 });
 
+<<<<<<< HEAD
 export default Kitchenware;
+=======
+export default Kitchenware;
+>>>>>>> 9625cf02ebc61d1105e524ea062b1861859de93d

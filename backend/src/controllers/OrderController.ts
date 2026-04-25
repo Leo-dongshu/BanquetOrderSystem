@@ -533,4 +533,8 @@ class OrderController {
   }
 }
 
+<<<<<<< HEAD
 export default OrderController;
+=======
+export default OrderController;
+>>>>>>> 9625cf02ebc61d1105e524ea062b1861859de93d

@@ -4,5 +4,9 @@ dist/
 logs/
 .env
 *.log
+<<<<<<< HEAD
 .DS_Store
 
+=======
+.DS_Store
+>>>>>>> 9625cf02ebc61d1105e524ea062b1861859de93d

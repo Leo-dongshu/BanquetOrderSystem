@@ -2,6 +2,14 @@ import { Request, Response } from 'express';
 import { User } from '../models';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+<<<<<<< HEAD
+=======
+import dotenv from 'dotenv';
+
+dotenv.config();
+const JWT_SECRET = process.env.JWT_SECRET || 'fallback-secret-key-change-in-production';
+const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '1h';
+>>>>>>> 9625cf02ebc61d1105e524ea062b1861859de93d
 
 class AuthController {
   // 用户注册
@@ -53,8 +61,13 @@ class AuthController {
       // 生成JWT令牌
       const token = jwt.sign(
         { id: user.id, username: user.username, role: user.role },
+<<<<<<< HEAD
         'your-secret-key', // 实际应用中应该使用环境变量
         { expiresIn: '1h' }
+=======
+        JWT_SECRET,
+        { expiresIn: JWT_EXPIRES_IN }
+>>>>>>> 9625cf02ebc61d1105e524ea062b1861859de93d
       );
       
       res.json({ message: '登录成功', token, user: { id: user.id, username: user.username, role: user.role } });

@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+<<<<<<< HEAD
 import { Order, OrderDish, Dish, DishIngredient, Ingredient, OrderSetMeal, SetMeal, SetMealDish } from '../models';
 import { Op } from 'sequelize';
 import * as XLSX from 'xlsx';
@@ -11,6 +12,15 @@ class StatsController {
       console.log('开始统计食材需求:', { start_date, end_date });
 
       // 构建日期查询条件
+=======
+import { Order } from '../models';
+import { Op } from 'sequelize';
+
+class StatsController {
+  static async getIngredientStats(req: Request, res: Response) {
+    try {
+      const { start_date, end_date } = req.query;
+>>>>>>> 9625cf02ebc61d1105e524ea062b1861859de93d
       const dateCondition = {};
       if (start_date) {
         Object.assign(dateCondition, { [Op.gte]: start_date });
@@ -18,6 +28,7 @@ class StatsController {
       if (end_date) {
         Object.assign(dateCondition, { [Op.lte]: end_date });
       }
+<<<<<<< HEAD
 
       // 查询指定日期范围内的订单，只包含已确认的订单
       const orders = await Order.findAll({
@@ -173,6 +184,23 @@ class StatsController {
       const { start_date, end_date } = req.query;
 
       // 构建日期查询条件
+=======
+      const orders = await Order.findAll({
+        where: {
+          service_date: dateCondition
+        }
+      });
+      const result: any[] = [];
+      res.json(result);
+    } catch (error) {
+      res.status(500).json({ error: '获取食材统计失败' });
+    }
+  }
+
+  static async getOrderStats(req: Request, res: Response) {
+    try {
+      const { start_date, end_date } = req.query;
+>>>>>>> 9625cf02ebc61d1105e524ea062b1861859de93d
       const dateCondition = {};
       if (start_date) {
         Object.assign(dateCondition, { [Op.gte]: start_date });
@@ -180,6 +208,7 @@ class StatsController {
       if (end_date) {
         Object.assign(dateCondition, { [Op.lte]: end_date });
       }
+<<<<<<< HEAD
 
       // 查询订单数据
       const orders = await Order.findAll({
@@ -502,6 +531,47 @@ class StatsController {
     } catch (error) {
       console.error('导出食材需求失败:', error);
       res.status(500).json({ error: '导出食材需求失败' });
+=======
+      const orders = await Order.findAll({ where: { service_date: dateCondition } });
+      let totalOrders = 0;
+      let totalAmount = 0;
+      let totalTables = 0;
+      const statusCount = {};
+      orders.forEach(order => {
+        totalOrders++;
+        totalAmount += Number((order as any).total_amount) || 0;
+        totalTables += (order as any).formal_tables + (order as any).backup_tables;
+        const status = (order as any).status;
+        if (statusCount[status]) {
+          statusCount[status]++;
+        } else {
+          statusCount[status] = 1;
+        }
+      });
+      res.json({ totalOrders, totalAmount, totalTables, statusCount });
+    } catch (error) {
+      res.status(500).json({ error: '获取订单统计失败' });
+    }
+  }
+
+  static async getDashboardStats(req: Request, res: Response) {
+    try {
+      const orders = await Order.findAll();
+      let totalOrders = orders.length;
+      let totalAmount = 0;
+      let pendingArrange = 0;
+      let pendingPayment = 0;
+      let completed = 0;
+      orders.forEach(order => {
+        totalAmount += Number((order as any).total_amount) || 0;
+        if ((order as any).status === 1) pendingArrange++;
+        if ((order as any).status === 3) pendingPayment++;
+        if ((order as any).status === 9) completed++;
+      });
+      res.json({ totalOrders, totalAmount, pendingArrange, pendingPayment, completed });
+    } catch (error) {
+      res.status(500).json({ error: '获取仪表板统计失败' });
+>>>>>>> 9625cf02ebc61d1105e524ea062b1861859de93d
     }
   }
 }

@@ -21,7 +21,10 @@ const api = axios.create({
   }
 });
 
+<<<<<<< HEAD
 // 请求拦截器，添加认证token
+=======
+>>>>>>> 9625cf02ebc61d1105e524ea062b1861859de93d
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token');
@@ -38,7 +41,10 @@ api.interceptors.request.use(
   }
 );
 
+<<<<<<< HEAD
 // 响应拦截器，处理401错误
+=======
+>>>>>>> 9625cf02ebc61d1105e524ea062b1861859de93d
 api.interceptors.response.use(
   (response) => response,
   (error) => {
@@ -50,9 +56,13 @@ api.interceptors.response.use(
   }
 );
 
+<<<<<<< HEAD
 // 订单相关API
 export const orderApi = {
   // 获取订单列表
+=======
+export const orderApi = {
+>>>>>>> 9625cf02ebc61d1105e524ea062b1861859de93d
   getOrders: (params?: any) => {
     if (typeof params === 'string') {
       return api.get<Order[]>(`/orders${params ? `?${params}` : ''}`);
@@ -60,6 +70,7 @@ export const orderApi = {
       return api.get<Order[]>('/orders', { params });
     }
   },
+<<<<<<< HEAD
   // 创建订单
   createOrder: (data: OrderRequest) => api.post<Order>('/orders', data),
   // 获取订单详情
@@ -94,11 +105,33 @@ export const dishApi = {
 // 用料相关API
 export const ingredientApi = {
   // 获取用料列表
+=======
+  createOrder: (data: OrderRequest) => api.post<Order>('/orders', data),
+  getOrderById: (id: number) => api.get<Order>(`/orders/${id}`),
+  updateOrder: (id: number, data: OrderRequest) => api.put<Order>(`/orders/${id}`, data),
+  deleteOrder: (id: number) => api.delete(`/orders/${id}`),
+  getOrderDishes: (orderId: number) => api.get<any[]>(`/orders/${orderId}/dishes`),
+  confirmPayment: (orderId: number, data: { payment_amount: number; discount_amount: number }) => 
+    api.post<Order>(`/orders/${orderId}/payment`, data),
+  getOrderStatuses: () => api.get<any[]>('/order-statuses')
+};
+
+export const dishApi = {
+  getDishes: () => api.get<Dish[]>('/dishes'),
+  createDish: (data: DishRequest) => api.post<Dish>('/dishes', data),
+  getDishById: (id: number) => api.get<Dish>(`/dishes/${id}`),
+  updateDish: (id: number, data: DishRequest) => api.put<Dish>(`/dishes/${id}`, data),
+  deleteDish: (id: number) => api.delete(`/dishes/${id}`)
+};
+
+export const ingredientApi = {
+>>>>>>> 9625cf02ebc61d1105e524ea062b1861859de93d
   getIngredients: (category?: string) => {
     const params = new URLSearchParams();
     if (category) params.append('category', category);
     return api.get<Ingredient[]>('/ingredients', { params });
   },
+<<<<<<< HEAD
   // 创建用料
   createIngredient: (data: IngredientRequest) => api.post<Ingredient>('/ingredients', data),
   // 获取用料详情
@@ -126,19 +159,40 @@ export const kitchenwareApi = {
 // 统计相关API
 export const statsApi = {
   // 获取食材统计
+=======
+  createIngredient: (data: IngredientRequest) => api.post<Ingredient>('/ingredients', data),
+  getIngredientById: (id: number) => api.get<Ingredient>(`/ingredients/${id}`),
+  updateIngredient: (id: number, data: IngredientRequest) => api.put<Ingredient>(`/ingredients/${id}`, data),
+  deleteIngredient: (id: number) => api.delete(`/ingredients/${id}`)
+};
+
+export const kitchenwareApi = {
+  getKitchenwares: () => api.get<any[]>('/kitchenwares'),
+  createKitchenware: (data: any) => api.post<any>('/kitchenwares', data),
+  getKitchenwareById: (id: number) => api.get<any>(`/kitchenwares/${id}`),
+  updateKitchenware: (id: number, data: any) => api.put<any>(`/kitchenwares/${id}`, data),
+  deleteKitchenware: (id: number) => api.delete(`/kitchenwares/${id}`)
+};
+
+export const statsApi = {
+>>>>>>> 9625cf02ebc61d1105e524ea062b1861859de93d
   getIngredientStats: (start_date?: string, end_date?: string) => {
     const params = new URLSearchParams();
     if (start_date) params.append('start_date', start_date);
     if (end_date) params.append('end_date', end_date);
     return api.get<any[]>('/stats/ingredients', { params });
   },
+<<<<<<< HEAD
   // 获取订单统计
+=======
+>>>>>>> 9625cf02ebc61d1105e524ea062b1861859de93d
   getOrderStats: (start_date?: string, end_date?: string) => {
     const params = new URLSearchParams();
     if (start_date) params.append('start_date', start_date);
     if (end_date) params.append('end_date', end_date);
     return api.get<any>('/stats/orders', { params });
   },
+<<<<<<< HEAD
   // 获取仪表盘统计
   getDashboardStats: () => api.get<any>('/stats/dashboard')
 };
@@ -166,6 +220,23 @@ export const setMealApi = {
 
 
 // 类别设置API
+=======
+  getDashboardStats: () => api.get<any>('/stats/dashboard')
+};
+
+export const calendarApi = {
+  getOrderCalendar: () => api.get<CalendarData>('/calendar/orders')
+};
+
+export const setMealApi = {
+  getSetMeals: () => api.get<SetMeal[]>('/set-meals'),
+  createSetMeal: (data: SetMealRequest) => api.post<SetMeal>('/set-meals', data),
+  getSetMealById: (id: number) => api.get<SetMeal>(`/set-meals/${id}`),
+  updateSetMeal: (id: number, data: SetMealRequest) => api.put<SetMeal>(`/set-meals/${id}`, data),
+  deleteSetMeal: (id: number) => api.delete(`/set-meals/${id}`)
+};
+
+>>>>>>> 9625cf02ebc61d1105e524ea062b1861859de93d
 export const categorySettingsApi = {
   getCategorySettings: (type?: string) => {
     const params = new URLSearchParams();
@@ -178,7 +249,10 @@ export const categorySettingsApi = {
   deleteCategorySetting: (id: number) => api.delete(`/category-settings/${id}`)
 };
 
+<<<<<<< HEAD
 // 类别类型API
+=======
+>>>>>>> 9625cf02ebc61d1105e524ea062b1861859de93d
 export const categoryTypeApi = {
   getCategoryTypes: () => api.get('/category-types'),
   createCategoryType: (data: { code: string; name: string }) => api.post('/category-types', data),
@@ -187,7 +261,10 @@ export const categoryTypeApi = {
   deleteCategoryType: (id: number) => api.delete(`/category-types/${id}`)
 };
 
+<<<<<<< HEAD
 // 人员管理API
+=======
+>>>>>>> 9625cf02ebc61d1105e524ea062b1861859de93d
 export const staffApi = {
   getStaffList: () => api.get('/staff'),
   createStaff: (data: { name: string; gender: string; age: number; phone: string; position: string; positionType: string; registrationTime: string }) => api.post('/staff', data),
@@ -196,7 +273,10 @@ export const staffApi = {
   deleteStaff: (id: number) => api.delete(`/staff/${id}`)
 };
 
+<<<<<<< HEAD
 // 车辆管理API
+=======
+>>>>>>> 9625cf02ebc61d1105e524ea062b1861859de93d
 export const vehicleApi = {
   getVehicles: () => api.get('/vehicles'),
   createVehicle: (data: { plateNumber: string; type: string; brand: string; status: string }) => api.post('/vehicles', data),
@@ -205,14 +285,22 @@ export const vehicleApi = {
   deleteVehicle: (id: number) => api.delete(`/vehicles/${id}`)
 };
 
+<<<<<<< HEAD
 // 人员安排API
+=======
+>>>>>>> 9625cf02ebc61d1105e524ea062b1861859de93d
 export const staffArrangementApi = {
   saveStaffArrangement: (data: { order_id: number; chefs: string[]; waiters: string[]; drivers: string[]; vehicles: string[]; externalDrivers: {name: string; phone: string; licensePlate: string}[]; departure_time: string; arrival_time: string; remark: string }) => api.post('/orders/staff-arrangement', data),
   getStaffArrangement: (order_id: number) => api.get(`/orders/${order_id}/staff-arrangement`)
 };
 
+<<<<<<< HEAD
 // 导出 axios 实例
 export { api as axiosInstance };
 
 // 默认导出 api
+=======
+export { api as axiosInstance };
+
+>>>>>>> 9625cf02ebc61d1105e524ea062b1861859de93d
 export default api;

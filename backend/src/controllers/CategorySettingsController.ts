@@ -6,7 +6,10 @@ class CategorySettingsController {
     try {
       const { type } = req.query;
       const whereCondition = type ? { type } : {};
+<<<<<<< HEAD
       
+=======
+>>>>>>> 9625cf02ebc61d1105e524ea062b1861859de93d
       const categorySettings = await CategorySetting.findAll({
         where: whereCondition,
         order: [['type', 'ASC'], ['created_at', 'DESC']]

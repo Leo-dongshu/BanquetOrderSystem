@@ -36,4 +36,8 @@
   "devDependencies": {
     "@types/cors": "^2.8.19"
   }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 9625cf02ebc61d1105e524ea062b1861859de93d
