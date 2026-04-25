@@ -86,7 +86,6 @@
                 </el-menu-item>
               </el-sub-menu>
               
-              
               <el-sub-menu index="/shop-management">
                 <template #title>
                   <el-icon><Shop /></el-icon>

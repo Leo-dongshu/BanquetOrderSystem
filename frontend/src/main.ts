@@ -16,7 +16,6 @@ app.use(ElementPlus, {
   locale: zhCn
 });
 
-// 初始化 axios 默认请求头
 const token = localStorage.getItem('token');
 if (token) {
   api.defaults.headers.common['Authorization'] = `Bearer ${token}`;

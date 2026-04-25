@@ -17,7 +17,6 @@ export const useAuthStore = defineStore('auth', {
     currentUser: (state) => state.user
   },
   actions: {
-    // 登录
     async login(username: string, password: string) {
       this.loading = true;
       this.error = null;
@@ -32,7 +31,6 @@ export const useAuthStore = defineStore('auth', {
         this.user = user;
         localStorage.setItem('token', token);
         
-        // 设置 axios 默认请求头
         api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
         
         return user;
@@ -44,7 +42,6 @@ export const useAuthStore = defineStore('auth', {
       }
     },
     
-    // 登出
     logout() {
       this.token = null;
       this.user = null;
@@ -52,7 +49,6 @@ export const useAuthStore = defineStore('auth', {
       delete api.defaults.headers.common['Authorization'];
     },
     
-    // 注册
     async register(username: string, password: string, role: string = 'user') {
       this.loading = true;
       this.error = null;
@@ -72,7 +68,6 @@ export const useAuthStore = defineStore('auth', {
       }
     },
     
-    // 获取当前用户信息
     async getCurrentUser() {
       if (!this.token) return;
       
