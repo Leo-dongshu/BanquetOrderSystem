@@ -3,48 +3,37 @@ import { Order } from '../models';
 import { Op } from 'sequelize';
 
 class CalendarController {
-  // 获取日历数据
-  static async getCalendarData(req: Request, res: Response) {
+  static async getOrderCalendar(req: Request, res: Response) {
     try {
-      const { year, month } = req.query;
-      
-      if (!year || !month) {
-        return res.status(400).json({ error: '缺少年份或月份参数' });
-      }
-      
-      const startDate = new Date(parseInt(year as string), parseInt(month as string) - 1, 1);
-      const endDate = new Date(parseInt(year as string), parseInt(month as string), 0);
-      
+      const startDate = new Date();
+      const endDate = new Date();
+      endDate.setMonth(endDate.getMonth() + 1);
+      const formatDate = (date: Date) => date.toISOString().split('T')[0];
       const orders = await Order.findAll({
         where: {
           service_date: {
-            [Op.between]: [startDate, endDate]
+            [Op.between]: [formatDate(startDate), formatDate(endDate)]
           }
         }
       });
-      
-      // 按日期分组
-      const dateMap = new Map();
+      const calendarData: any = {};
       orders.forEach(order => {
-        const date = order.service_date.toISOString().split('T')[0];
-        const existing = dateMap.get(date) || {
-          date,
-          confirmed: 0,
-          pending: 0
-        };
-        
-        if (order.status === 'confirmed') {
-          existing.confirmed++;
-        } else if (order.status === 'pending') {
-          existing.pending++;
+        const dateStr = String((order as any).service_date);
+        if (!calendarData[dateStr]) {
+          calendarData[dateStr] = [];
         }
-        
-        dateMap.set(date, existing);
+        calendarData[dateStr].push({
+          id: (order as any).id,
+          customer_name: (order as any).customer_name,
+          customer_phone: (order as any).customer_phone,
+          table_count: (order as any).formal_tables + (order as any).backup_tables,
+          total_amount: (order as any).total_amount,
+          status: (order as any).status
+        });
       });
-      
-      res.json(Array.from(dateMap.values()));
+      res.json(calendarData);
     } catch (error) {
-      res.status(500).json({ error: '获取日历数据失败' });
+      res.status(500).json({ error: '获取订单日历失败' });
     }
   }
 }
