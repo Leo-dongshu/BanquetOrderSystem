@@ -60,10 +60,8 @@ class AuthController {
       // 生成JWT令牌
       const token = jwt.sign(
         { id: user.id, username: user.username, role: user.role },
-
         JWT_SECRET,
-        { expiresIn: JWT_EXPIRES_IN }
-
+        { expiresIn: JWT_EXPIRES_IN as string }
       );
       
       res.json({ message: '登录成功', token, user: { id: user.id, username: user.username, role: user.role } });

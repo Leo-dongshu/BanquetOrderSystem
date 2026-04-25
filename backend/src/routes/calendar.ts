@@ -4,6 +4,6 @@ import authMiddleware from '../middleware/auth';
 
 const router = express.Router();
 
-router.get('/', authMiddleware, CalendarController.getCalendarData);
+router.get('/', authMiddleware, CalendarController.getOrderCalendar);
 
 export default router;

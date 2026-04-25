@@ -44,7 +44,7 @@ class StatsController {
       let totalOrders = 0;
       let totalAmount = 0;
       let totalTables = 0;
-      const statusCount = {};
+      const statusCount: { [key: string | number]: number } = {};
       orders.forEach(order => {
         totalOrders++;
         totalAmount += Number((order as any).total_amount) || 0;

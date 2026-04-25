@@ -20,17 +20,21 @@ apt update && apt upgrade -y
 
 # 安装必要的依赖
 echo "正在安装必要的依赖..."
-apt install -y curl git ufw
+apt install -y curl git ufw ca-certificates
 
-# 安装 Node.js
+# 安装 Node.js (使用 NodeSource 官方源，更稳定)
 echo "正在安装 Node.js..."
 if ! command -v node &> /dev/null; then
-    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
-    export NVM_DIR="$HOME/.nvm"
-    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-    nvm install 18
-    nvm use 18
+    # 下载并运行 NodeSource 安装脚本
+    curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
+    apt install -y nodejs
+    echo "Node.js 版本: $(node -v)"
+    echo "npm 版本: $(npm -v)"
 fi
+
+# 配置 npm 使用国内镜像源
+echo "正在配置 npm 镜像源..."
+npm config set registry https://registry.npmmirror.com
 
 # 安装 MySQL
 echo "正在安装 MySQL..."
@@ -62,4 +66,6 @@ echo "1. 配置 MySQL 数据库"
 echo "2. 上传项目文件"
 echo "3. 配置后端环境"
 echo "4. 构建并启动服务"
+echo ""
+echo "详细文档请查看 deploy/README.md"
 echo ""
