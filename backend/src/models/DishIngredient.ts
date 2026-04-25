@@ -50,7 +50,6 @@ DishIngredient.init({
   updatedAt: false
 });
 
-// 设置关联关系
 Dish.hasMany(DishIngredient, { foreignKey: 'dish_id', as: 'dish_ingredients' });
 Ingredient.hasMany(DishIngredient, { foreignKey: 'ingredient_id' });
 DishIngredient.belongsTo(Dish, { foreignKey: 'dish_id' });

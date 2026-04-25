@@ -51,7 +51,6 @@ SetMealDish.init({
   updatedAt: false
 });
 
-// 设置关联关系
 SetMeal.hasMany(SetMealDish, { foreignKey: 'set_meal_id', as: 'set_meal_dishes' });
 SetMealDish.belongsTo(SetMeal, { foreignKey: 'set_meal_id' });
 Dish.hasMany(SetMealDish, { foreignKey: 'dish_id' });
