@@ -45,10 +45,8 @@ OrderSetMeal.init({
   updatedAt: false
 });
 
-<<<<<<< HEAD
-// 设置关联关系
-=======
->>>>>>> 9625cf02ebc61d1105e524ea062b1861859de93d
+
+
 Order.hasMany(OrderSetMeal, { foreignKey: 'order_id', as: 'order_set_meals' });
 OrderSetMeal.belongsTo(Order, { foreignKey: 'order_id' });
 SetMeal.hasMany(OrderSetMeal, { foreignKey: 'set_meal_id' });

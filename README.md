@@ -77,12 +77,135 @@
 - 显示最近1个月的订单安排
 - 点击日期查看当天的订单详情
 
+## Git 使用指南
+
+### 首次克隆项目
+
+```bash
+# SSH方式（推荐）
+git clone git@github.com:Leo-dongshu/BanquetOrderSystem.git
+
+# HTTPS方式
+git clone https://github.com/Leo-dongshu/BanquetOrderSystem.git
+
+cd BanquetOrderSystem
+```
+
+### 配置Git（首次使用）
+
+```bash
+# 配置用户名
+git config --global user.name "您的用户名"
+
+# 配置邮箱
+git config --global user.email "您的邮箱@example.com"
+```
+
+### 日常开发工作流程
+
+#### 1. 拉取最新代码（开始工作前）
+```bash
+git pull origin main
+```
+
+#### 2. 查看修改状态
+```bash
+git status
+```
+
+#### 3. 添加修改的文件
+```bash
+# 添加所有文件
+git add .
+
+# 或添加特定文件
+git add 文件名
+```
+
+#### 4. 提交修改
+```bash
+git commit -m "描述您的修改内容"
+```
+
+#### 5. 推送到GitHub
+```bash
+git push origin main
+```
+
+### 首次上传代码到GitHub（全新项目）
+
+```bash
+# 1. 初始化Git仓库
+git init
+
+# 2. 添加所有文件
+git add .
+
+# 3. 提交
+git commit -m "初始提交：完整的宴席订单管理系统"
+
+# 4. 添加远程仓库（SSH方式）
+git remote add origin git@github.com:Leo-dongshu/BanquetOrderSystem.git
+
+# 5. 重命名分支为main（如果需要）
+git branch -M main
+
+# 6. 推送到GitHub
+git push -u origin main
+```
+
+### Git分支管理（可选）
+
+```bash
+# 创建并切换到新分支
+git checkout -b feature/新功能名称
+
+# 切换到main分支
+git checkout main
+
+# 合并分支到main
+git merge feature/新功能名称
+
+# 删除分支
+git branch -d feature/新功能名称
+```
+
+### 常见问题解决
+
+#### 问题1：SSH连接配置
+```bash
+# 生成SSH密钥
+ssh-keygen -t ed25519 -C "your_email@example.com"
+
+# 查看公钥
+cat ~/.ssh/id_ed25519.pub
+
+# 测试SSH连接
+ssh -T git@github.com
+```
+
+#### 问题2：代理配置（如需要）
+```bash
+# 配置代理
+git config --global http.proxy http://127.0.0.1:7890
+git config --global https.proxy https://127.0.0.1:7890
+
+# 取消代理
+git config --global --unset http.proxy
+git config --global --unset https.proxy
+```
+
+#### 问题3：查看提交历史
+```bash
+git log --oneline --graph
+```
+
 ## 安装步骤
 
 ### 1. 克隆项目
 
 ```bash
-git clone <项目地址>
+git clone git@github.com:Leo-dongshu/BanquetOrderSystem.git
 cd BanquetOrderSystem
 ```
 
@@ -106,11 +229,7 @@ npm install
 
 - 确保MySQL服务已启动
 - 创建名为 `banquet_order_system` 的数据库
-<<<<<<< HEAD
-- 修改后端数据库配置文件 `src/config/database.ts` 中的连接信息
-=======
 - 复制 backend/.env.example 为 backend/.env，并修改数据库连接信息
->>>>>>> 9625cf02ebc61d1105e524ea062b1861859de93d
 
 ### 4. 启动服务
 
@@ -178,11 +297,7 @@ npm run dev
 ### 后端配置
 
 - **端口**：默认运行在 8082 端口，可在 `src/main.ts` 中修改
-<<<<<<< HEAD
-- **数据库**：使用MySQL，配置文件为 `src/config/database.ts`
-=======
 - **数据库**：使用MySQL，配置通过环境变量或 .env 文件
->>>>>>> 9625cf02ebc61d1105e524ea062b1861859de93d
 - **时区**：默认设置为 '+08:00'，确保时间显示正确
 
 ### 前端配置
@@ -229,12 +344,8 @@ frontend/
 1. 系统使用MySQL数据库，需要先创建数据库并配置连接信息
 2. 首次启动时会自动创建数据库表结构并初始化基础数据
 3. 建议在使用前先添加一些基础的菜品、用料和人员数据
-<<<<<<< HEAD
-4. 系统目前没有用户认证功能，所有访问者都可以操作所有功能
-5. 打印功能需要浏览器支持打印操作
-=======
 4. 打印功能需要浏览器支持打印操作
->>>>>>> 9625cf02ebc61d1105e524ea062b1861859de93d
+5. 建议使用SSH方式连接GitHub，更安全稳定
 
 ## 未来优化方向
 
@@ -248,3 +359,7 @@ frontend/
 ## 联系方式
 
 如有问题或建议，请联系系统管理员。
+
+## 仓库地址
+
+- GitHub: https://github.com/Leo-dongshu/BanquetOrderSystem

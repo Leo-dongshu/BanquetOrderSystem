@@ -49,10 +49,8 @@ OrderDish.init({
   updatedAt: false
 });
 
-<<<<<<< HEAD
-// 设置关联关系
-=======
->>>>>>> 9625cf02ebc61d1105e524ea062b1861859de93d
+
+
 Order.hasMany(OrderDish, { foreignKey: 'order_id', as: 'order_dishes' });
 Dish.hasMany(OrderDish, { foreignKey: 'dish_id' });
 OrderDish.belongsTo(Order, { foreignKey: 'order_id' });

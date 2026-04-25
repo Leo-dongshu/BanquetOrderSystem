@@ -2,18 +2,14 @@ import { Request, Response } from 'express';
 import { Ingredient } from '../models';
 
 class IngredientController {
-<<<<<<< HEAD
-  // 获取用料列表
-=======
->>>>>>> 9625cf02ebc61d1105e524ea062b1861859de93d
+
+
   static async getIngredients(req: Request, res: Response) {
     try {
       const { category } = req.query;
       const whereCondition = category ? { category } : {};
-<<<<<<< HEAD
-      
-=======
->>>>>>> 9625cf02ebc61d1105e524ea062b1861859de93d
+
+
       const ingredients = await Ingredient.findAll({
         where: whereCondition,
         order: [['category', 'ASC'], ['created_at', 'DESC']]
@@ -24,10 +20,8 @@ class IngredientController {
     }
   }
 
-<<<<<<< HEAD
-  // 创建新用料
-=======
->>>>>>> 9625cf02ebc61d1105e524ea062b1861859de93d
+
+
   static async createIngredient(req: Request, res: Response) {
     try {
       const { name, unit, quantity, category } = req.body;
@@ -47,10 +41,8 @@ class IngredientController {
     }
   }
 
-<<<<<<< HEAD
-  // 获取用料详情
-=======
->>>>>>> 9625cf02ebc61d1105e524ea062b1861859de93d
+
+
   static async getIngredientById(req: Request, res: Response) {
     try {
       const { id } = req.params;
@@ -65,10 +57,8 @@ class IngredientController {
     }
   }
 
-<<<<<<< HEAD
-  // 更新用料
-=======
->>>>>>> 9625cf02ebc61d1105e524ea062b1861859de93d
+
+
   static async updateIngredient(req: Request, res: Response) {
     try {
       const { id } = req.params;
@@ -79,10 +69,8 @@ class IngredientController {
       if (!ingredient) {
         return res.status(404).json({ error: '用料不存在' });
       }
-<<<<<<< HEAD
 
-=======
->>>>>>> 9625cf02ebc61d1105e524ea062b1861859de93d
+
       await ingredient.update({
         name: name || ingredient.name,
         unit: unit || ingredient.unit,
@@ -90,20 +78,16 @@ class IngredientController {
         category: category || ingredient.category,
         updatedBy: username
       });
-<<<<<<< HEAD
 
-=======
->>>>>>> 9625cf02ebc61d1105e524ea062b1861859de93d
+
       res.json(ingredient);
     } catch (error) {
       res.status(500).json({ error: '更新用料失败' });
     }
   }
 
-<<<<<<< HEAD
-  // 删除用料
-=======
->>>>>>> 9625cf02ebc61d1105e524ea062b1861859de93d
+
+
   static async deleteIngredient(req: Request, res: Response) {
     try {
       const { id } = req.params;
@@ -111,10 +95,8 @@ class IngredientController {
       if (!ingredient) {
         return res.status(404).json({ error: '用料不存在' });
       }
-<<<<<<< HEAD
 
-=======
->>>>>>> 9625cf02ebc61d1105e524ea062b1861859de93d
+
       await ingredient.destroy();
       res.json({ message: '用料删除成功' });
     } catch (error) {

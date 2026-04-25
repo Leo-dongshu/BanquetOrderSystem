@@ -4,18 +4,11 @@ import { Staff } from '../models';
 class StaffController {
   static async getStaffList(req: Request, res: Response) {
     try {
-<<<<<<< HEAD
-      const staffList = await Staff.findAll({
-        order: [['created_at', 'DESC']]
-      });
-      res.json(staffList);
-    } catch (error) {
-      console.error('获取人员列表失败:', error);
-=======
+
       const staff = await Staff.findAll({ order: [['created_at', 'DESC']] });
       res.json(staff);
     } catch (error) {
->>>>>>> 9625cf02ebc61d1105e524ea062b1861859de93d
+
       res.status(500).json({ error: '获取人员列表失败' });
     }
   }
@@ -38,10 +31,8 @@ class StaffController {
       });
       res.json(staff);
     } catch (error) {
-<<<<<<< HEAD
-      console.error('创建人员失败:', error);
-=======
->>>>>>> 9625cf02ebc61d1105e524ea062b1861859de93d
+
+
       res.status(500).json({ error: '创建人员失败' });
     }
   }
@@ -56,10 +47,8 @@ class StaffController {
         res.status(404).json({ error: '人员不存在' });
       }
     } catch (error) {
-<<<<<<< HEAD
-      console.error('获取人员详情失败:', error);
-=======
->>>>>>> 9625cf02ebc61d1105e524ea062b1861859de93d
+
+
       res.status(500).json({ error: '获取人员详情失败' });
     }
   }
@@ -86,10 +75,8 @@ class StaffController {
       });
       res.json(staff);
     } catch (error) {
-<<<<<<< HEAD
-      console.error('更新人员失败:', error);
-=======
->>>>>>> 9625cf02ebc61d1105e524ea062b1861859de93d
+
+
       res.status(500).json({ error: '更新人员失败' });
     }
   }
@@ -104,10 +91,8 @@ class StaffController {
       await staff.destroy();
       res.json({ message: '删除人员成功' });
     } catch (error) {
-<<<<<<< HEAD
-      console.error('删除人员失败:', error);
-=======
->>>>>>> 9625cf02ebc61d1105e524ea062b1861859de93d
+
+
       res.status(500).json({ error: '删除人员失败' });
     }
   }

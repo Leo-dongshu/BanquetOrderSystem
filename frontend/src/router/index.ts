@@ -161,10 +161,8 @@ const router = createRouter({
   routes
 });
 
-<<<<<<< HEAD
-// 路由守卫
-=======
->>>>>>> 9625cf02ebc61d1105e524ea062b1861859de93d
+
+
 router.beforeEach((to, from, next) => {
   const token = localStorage.getItem('token');
   const requiresAuth = to.meta.requiresAuth !== false;

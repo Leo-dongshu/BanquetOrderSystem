@@ -1,20 +1,14 @@
 import { Request, Response } from 'express';
-<<<<<<< HEAD
-import { CategoryType, CategorySetting } from '../models';
-=======
+
 import { CategoryType } from '../models';
->>>>>>> 9625cf02ebc61d1105e524ea062b1861859de93d
+
 
 class CategoryTypeController {
   static async getCategoryTypes(req: Request, res: Response) {
     try {
-<<<<<<< HEAD
-      const categoryTypes = await CategoryType.findAll({
-        order: [['created_at', 'DESC']]
-      });
-=======
+
       const categoryTypes = await CategoryType.findAll({ order: [['created_at', 'DESC']] });
->>>>>>> 9625cf02ebc61d1105e524ea062b1861859de93d
+
       res.json(categoryTypes);
     } catch (error) {
       res.status(500).json({ error: '获取类别类型列表失败' });
@@ -78,15 +72,8 @@ class CategoryTypeController {
       if (!categoryType) {
         return res.status(404).json({ error: '类别类型不存在' });
       }
-<<<<<<< HEAD
-      
-      // 删除该类型下的所有类别设置
-      await CategorySetting.destroy({
-        where: { type: categoryType.name }
-      });
-      
-=======
->>>>>>> 9625cf02ebc61d1105e524ea062b1861859de93d
+
+
       await categoryType.destroy();
       res.json({ message: '类别类型删除成功' });
     } catch (error) {

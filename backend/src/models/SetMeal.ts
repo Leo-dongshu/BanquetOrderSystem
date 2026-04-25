@@ -72,8 +72,6 @@ SetMeal.init({
   updatedAt: 'updated_at'
 });
 
-<<<<<<< HEAD
+
 export default SetMeal;
-=======
-export default SetMeal;
->>>>>>> 9625cf02ebc61d1105e524ea062b1861859de93d
+

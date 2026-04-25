@@ -51,17 +51,13 @@ SetMealDish.init({
   updatedAt: false
 });
 
-<<<<<<< HEAD
-// 设置关联关系
-=======
->>>>>>> 9625cf02ebc61d1105e524ea062b1861859de93d
+
+
 SetMeal.hasMany(SetMealDish, { foreignKey: 'set_meal_id', as: 'set_meal_dishes' });
 SetMealDish.belongsTo(SetMeal, { foreignKey: 'set_meal_id' });
 Dish.hasMany(SetMealDish, { foreignKey: 'dish_id' });
 SetMealDish.belongsTo(Dish, { foreignKey: 'dish_id', as: 'dish' });
 
-<<<<<<< HEAD
+
 export default SetMealDish;
-=======
-export default SetMealDish;
->>>>>>> 9625cf02ebc61d1105e524ea062b1861859de93d
+

@@ -11,8 +11,6 @@
     "noFallthroughCasesInSwitch": true
   },
   "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.vue"]
-<<<<<<< HEAD
+
 }
-=======
-}
->>>>>>> 9625cf02ebc61d1105e524ea062b1861859de93d
+

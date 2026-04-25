@@ -17,10 +17,8 @@ export const useAuthStore = defineStore('auth', {
     currentUser: (state) => state.user
   },
   actions: {
-<<<<<<< HEAD
-    // 登录
-=======
->>>>>>> 9625cf02ebc61d1105e524ea062b1861859de93d
+
+
     async login(username: string, password: string) {
       this.loading = true;
       this.error = null;
@@ -35,10 +33,8 @@ export const useAuthStore = defineStore('auth', {
         this.user = user;
         localStorage.setItem('token', token);
         
-<<<<<<< HEAD
-        // 设置 axios 默认请求头
-=======
->>>>>>> 9625cf02ebc61d1105e524ea062b1861859de93d
+
+
         api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
         
         return user;
@@ -50,10 +46,8 @@ export const useAuthStore = defineStore('auth', {
       }
     },
     
-<<<<<<< HEAD
-    // 登出
-=======
->>>>>>> 9625cf02ebc61d1105e524ea062b1861859de93d
+
+
     logout() {
       this.token = null;
       this.user = null;
@@ -61,10 +55,8 @@ export const useAuthStore = defineStore('auth', {
       delete api.defaults.headers.common['Authorization'];
     },
     
-<<<<<<< HEAD
-    // 注册
-=======
->>>>>>> 9625cf02ebc61d1105e524ea062b1861859de93d
+
+
     async register(username: string, password: string, role: string = 'user') {
       this.loading = true;
       this.error = null;
@@ -84,10 +76,8 @@ export const useAuthStore = defineStore('auth', {
       }
     },
     
-<<<<<<< HEAD
-    // 获取当前用户信息
-=======
->>>>>>> 9625cf02ebc61d1105e524ea062b1861859de93d
+
+
     async getCurrentUser() {
       if (!this.token) return;
       
