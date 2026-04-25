@@ -1,16 +1,15 @@
 import { DataTypes, Model } from 'sequelize';
 import sequelize from '../config/database';
-import Order from './Order';
-import SetMeal from './SetMeal';
 
-class OrderSetMeal extends Model {
+class OrderStatusHistory extends Model {
   public id!: number;
   public order_id!: number;
-  public set_meal_id!: number;
+  public status_id!: number;
+  public created_by!: string;
   public readonly created_at!: Date;
 }
 
-OrderSetMeal.init({
+OrderStatusHistory.init({
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
@@ -20,18 +19,21 @@ OrderSetMeal.init({
     type: DataTypes.INTEGER,
     allowNull: false,
     references: {
-      model: Order,
+      model: 'orders',
       key: 'id'
-    },
-    onDelete: 'CASCADE'
+    }
   },
-  set_meal_id: {
+  status_id: {
     type: DataTypes.INTEGER,
     allowNull: false,
     references: {
-      model: SetMeal,
+      model: 'order_statuses',
       key: 'id'
     }
+  },
+  created_by: {
+    type: DataTypes.STRING(50),
+    allowNull: false
   },
   created_at: {
     type: DataTypes.DATE,
@@ -39,16 +41,12 @@ OrderSetMeal.init({
   }
 }, {
   sequelize,
-  tableName: 'order_set_meals',
+  tableName: 'order_status_history',
   timestamps: true,
   createdAt: 'created_at',
   updatedAt: false
 });
 
-// 设置关联关系
-Order.hasMany(OrderSetMeal, { foreignKey: 'order_id', as: 'order_set_meals' });
-OrderSetMeal.belongsTo(Order, { foreignKey: 'order_id' });
-SetMeal.hasMany(OrderSetMeal, { foreignKey: 'set_meal_id' });
-OrderSetMeal.belongsTo(SetMeal, { foreignKey: 'set_meal_id', as: 'set_meal' });
+// 关联关系将在需要时通过其他方式处理
 
-export default OrderSetMeal;
+export default OrderStatusHistory;

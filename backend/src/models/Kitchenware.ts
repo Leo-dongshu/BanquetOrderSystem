@@ -1,19 +1,18 @@
 import { DataTypes, Model } from 'sequelize';
 import sequelize from '../config/database';
 
-class Dish extends Model {
+class Kitchenware extends Model {
   public id!: number;
   public name!: string;
-  public dishware!: string;
-  public cookingMethod!: string;
-  public cookingDescription!: string;
+  public type!: string;
+  public quantity!: number;
   public createdBy!: string;
   public updatedBy!: string;
   public readonly created_at!: Date;
   public readonly updated_at!: Date;
 }
 
-Dish.init({
+Kitchenware.init({
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
@@ -23,17 +22,14 @@ Dish.init({
     type: DataTypes.STRING(255),
     allowNull: false
   },
-  dishware: {
+  type: {
     type: DataTypes.STRING(50),
     allowNull: false
   },
-  cookingMethod: {
-    type: DataTypes.STRING(50),
-    allowNull: false
-  },
-  cookingDescription: {
-    type: DataTypes.TEXT,
-    allowNull: true
+  quantity: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    defaultValue: 0
   },
   created_at: {
     type: DataTypes.DATE,
@@ -54,10 +50,10 @@ Dish.init({
   }
 }, {
   sequelize,
-  tableName: 'dishes',
+  tableName: 'kitchenwares',
   timestamps: true,
   createdAt: 'created_at',
   updatedAt: 'updated_at'
 });
 
-export default Dish;
+export default Kitchenware;

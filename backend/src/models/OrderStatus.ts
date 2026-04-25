@@ -1,37 +1,26 @@
 import { DataTypes, Model } from 'sequelize';
 import sequelize from '../config/database';
 
-class Dish extends Model {
+class OrderStatus extends Model {
   public id!: number;
   public name!: string;
-  public dishware!: string;
-  public cookingMethod!: string;
-  public cookingDescription!: string;
-  public createdBy!: string;
-  public updatedBy!: string;
+  public description!: string;
   public readonly created_at!: Date;
   public readonly updated_at!: Date;
 }
 
-Dish.init({
+OrderStatus.init({
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
-    autoIncrement: true
+    autoIncrement: false
   },
   name: {
-    type: DataTypes.STRING(255),
-    allowNull: false
-  },
-  dishware: {
     type: DataTypes.STRING(50),
-    allowNull: false
+    allowNull: false,
+    unique: true
   },
-  cookingMethod: {
-    type: DataTypes.STRING(50),
-    allowNull: false
-  },
-  cookingDescription: {
+  description: {
     type: DataTypes.TEXT,
     allowNull: true
   },
@@ -43,21 +32,13 @@ Dish.init({
     type: DataTypes.DATE,
     defaultValue: DataTypes.NOW,
     onUpdate: 'NOW'
-  },
-  createdBy: {
-    type: DataTypes.STRING(50),
-    allowNull: false
-  },
-  updatedBy: {
-    type: DataTypes.STRING(50),
-    allowNull: false
   }
 }, {
   sequelize,
-  tableName: 'dishes',
+  tableName: 'order_statuses',
   timestamps: true,
   createdAt: 'created_at',
   updatedAt: 'updated_at'
 });
 
-export default Dish;
+export default OrderStatus;

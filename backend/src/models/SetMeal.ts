@@ -4,8 +4,11 @@ import sequelize from '../config/database';
 class SetMeal extends Model {
   public id!: number;
   public name!: string;
+  public type!: string;
   public price!: number;
   public description!: string;
+  public dishCount!: number;
+  public isVisible!: boolean;
   public createdBy!: string;
   public updatedBy!: string;
   public readonly created_at!: Date;
@@ -22,6 +25,10 @@ SetMeal.init({
     type: DataTypes.STRING(255),
     allowNull: false
   },
+  type: {
+    type: DataTypes.STRING(100),
+    allowNull: false
+  },
   price: {
     type: DataTypes.DECIMAL(10, 2),
     allowNull: false
@@ -29,6 +36,16 @@ SetMeal.init({
   description: {
     type: DataTypes.TEXT,
     allowNull: true
+  },
+  dishCount: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    defaultValue: 0
+  },
+  isVisible: {
+    type: DataTypes.BOOLEAN,
+    allowNull: false,
+    defaultValue: true
   },
   created_at: {
     type: DataTypes.DATE,

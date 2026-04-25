@@ -5,7 +5,7 @@ class Ingredient extends Model {
   public id!: number;
   public name!: string;
   public unit!: string;
-  public price!: number;
+  public quantity!: number;
   public category!: string;
   public createdBy!: string;
   public updatedBy!: string;
@@ -27,7 +27,7 @@ Ingredient.init({
     type: DataTypes.STRING(20),
     allowNull: false
   },
-  price: {
+  quantity: {
     type: DataTypes.DECIMAL(10, 2),
     allowNull: false,
     defaultValue: 0
@@ -35,7 +35,7 @@ Ingredient.init({
   category: {
     type: DataTypes.STRING(50),
     allowNull: false,
-    defaultValue: '粮油调味'
+    defaultValue: 'grain-oil'
   },
   created_at: {
     type: DataTypes.DATE,
