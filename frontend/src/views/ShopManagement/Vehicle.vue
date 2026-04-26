@@ -100,6 +100,7 @@ import { ref, reactive, onMounted, computed } from 'vue';
 import { Plus, Edit, Delete } from '@element-plus/icons-vue';
 import { ElMessage } from 'element-plus';
 import { useAuthStore } from '../../store/auth';
+import { vehicleApi, categorySettingsApi } from '../../api';
 
 // 车辆数据
 const vehicleList = ref<any[]>([]);
@@ -159,25 +160,14 @@ const deletingId = ref(0);
 // 初始化auth store
 const authStore = useAuthStore();
 
-// API基础URL
-const API_BASE_URL = '/api';
-
 // 获取车辆列表
 const fetchVehicles = async () => {
   loading.value = true;
   try {
-    const response = await fetch(`${API_BASE_URL}/vehicles`, {
-      headers: {
-        'Authorization': `Bearer ${authStore.token}`
-      }
-    });
-    if (!response.ok) {
-      throw new Error('获取车辆列表失败');
-    }
-    const data = await response.json();
-    vehicleList.value = data;
+    const response = await vehicleApi.getVehicles();
+    vehicleList.value = response.data;
   } catch (error) {
-    console.error('获取车辆列表失败:', error);
+    // console.error('获取车辆列表失败:', error);
     ElMessage.error('获取车辆列表失败');
   } finally {
     loading.value = false;
@@ -187,18 +177,10 @@ const fetchVehicles = async () => {
 // 获取车辆类型数据
 const fetchVehicleTypes = async () => {
   try {
-    const response = await fetch(`${API_BASE_URL}/category-settings?type=车辆类型`, {
-      headers: {
-        'Authorization': `Bearer ${authStore.token}`
-      }
-    });
-    if (!response.ok) {
-      throw new Error('获取车辆类型数据失败');
-    }
-    const data = await response.json();
-    vehicleTypes.value = data;
+    const response = await categorySettingsApi.getCategorySettings('车辆类型');
+    vehicleTypes.value = response.data;
   } catch (error) {
-    console.error('获取车辆类型数据失败:', error);
+    // console.error('获取车辆类型数据失败:', error);
     ElMessage.error('获取车辆类型数据失败');
   }
 };
@@ -241,52 +223,24 @@ const saveVehicle = async () => {
     await formRef.value.validate();
     saving.value = true;
     
-    // 获取当前登录用户的用户名
-    const currentUsername = authStore.user?.username || 'admin';
-    
     if (form.id === 0) {
       // 添加新车辆
-      const response = await fetch(`${API_BASE_URL}/vehicles`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${authStore.token}`
-        },
-        body: JSON.stringify({
-          plateNumber: form.plateNumber,
-          type: form.type,
-          brand: form.brand,
-          status: form.status,
-          createdBy: currentUsername,
-          updatedBy: currentUsername
-        })
+      await vehicleApi.createVehicle({
+        plateNumber: form.plateNumber,
+        type: form.type,
+        brand: form.brand,
+        status: form.status
       });
-      
-      if (!response.ok) {
-        throw new Error('添加车辆失败');
-      }
       
       ElMessage.success('添加车辆成功');
     } else {
       // 编辑现有车辆
-      const response = await fetch(`${API_BASE_URL}/vehicles/${form.id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${authStore.token}`
-        },
-        body: JSON.stringify({
-          plateNumber: form.plateNumber,
-          type: form.type,
-          brand: form.brand,
-          status: form.status,
-          updatedBy: currentUsername
-        })
+      await vehicleApi.updateVehicle(form.id, {
+        plateNumber: form.plateNumber,
+        type: form.type,
+        brand: form.brand,
+        status: form.status
       });
-      
-      if (!response.ok) {
-        throw new Error('更新车辆失败');
-      }
       
       ElMessage.success('更新车辆成功');
     }
@@ -313,16 +267,7 @@ const confirmDelete = async () => {
   try {
     deleting.value = true;
     
-    const response = await fetch(`${API_BASE_URL}/vehicles/${deletingId.value}`, {
-      method: 'DELETE',
-      headers: {
-        'Authorization': `Bearer ${authStore.token}`
-      }
-    });
-    
-    if (!response.ok) {
-      throw new Error('删除车辆失败');
-    }
+    await vehicleApi.deleteVehicle(deletingId.value);
     
     ElMessage.success('删除车辆成功');
     deleteDialogVisible.value = false;

@@ -12,7 +12,7 @@ import type {
 } from '../types';
 
 const api = axios.create({
-  baseURL: '/api',  // 使用相对路径，通过Nginx代理到后端
+  baseURL: import.meta.env.VITE_API_BASE_URL || '/api',
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json'

@@ -79,12 +79,35 @@ pm2 startup
 
 ### 4. 部署前端
 
+#### 方案 A：本地构建后上传（推荐，速度快）
+
+```bash
+# 在本地电脑上执行
+cd d:\code\workspases\BanquetOrderSystem\frontend
+
+# 配置环境变量（如果需要自定义 API 地址）
+# 复制示例文件
+cp .env.example .env.production
+# 编辑 .env.production，根据需要修改 VITE_API_BASE_URL
+# 如果前端和后端部署在同一域名，保持 /api 即可
+# 如果不同域名，修改为完整地址：http://your-domain.com/api
+
+# 本地构建（使用生产环境配置）
+npm run build
+
+# 将 dist 文件夹上传到服务器
+# 使用 scp 或其他工具上传到 /var/www/BanquetOrderSystem/frontend/dist
+```
+
+#### 方案 B：服务器构建（较慢）
+
 ```bash
 cd /var/www/BanquetOrderSystem/frontend
 
-# 修改 API 地址
-nano src/api/index.ts
-# 将 baseURL 修改为你的服务器地址或域名
+# 配置环境变量
+cp .env.example .env.production
+nano .env.production
+# 根据需要修改 VITE_API_BASE_URL
 
 # 安装依赖并构建
 npm install
@@ -125,7 +148,7 @@ chmod +x /var/www/BanquetOrderSystem/deploy/backup-db.sh
 # 添加到 crontab
 crontab -e
 # 添加以下行（每天凌晨2点备份）
-0 2 * * * /var/www/BanquetOrderSystem/deploy/backup-db.sh
+0 2 * * * /root/var/www/BanquetOrderSystem/deploy/backup-db.sh
 ```
 
 ## 常用命令
@@ -171,3 +194,4 @@ mysql -u banquet_user -p
 # 手动备份
 /var/www/BanquetOrderSystem/deploy/backup-db.sh
 ```
+
