@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { useRouter } from 'vue-router';
 import type {
   Order,
   OrderRequest,
@@ -24,10 +25,8 @@ const api = axios.create({
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token');
-    // console.log('Token from localStorage:', token);
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
-      // console.log('Authorization header set:', config.headers.Authorization);
     }
     return config;
   },
@@ -44,7 +43,9 @@ api.interceptors.response.use(
   (error) => {
     if (error.response?.status === 401) {
       localStorage.removeItem('token');
-      window.location.href = '/login';
+      localStorage.removeItem('token_expiry');
+      const router = useRouter();
+      router.push('/login');
     }
     return Promise.reject(error);
   }

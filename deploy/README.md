@@ -317,6 +317,10 @@ systemctl status nginx
 
 # 2. 拉取代码
 cd /var/www/BanquetOrderSystem
+
+# 丢弃所有未提交的生产环境修改（更彻底）
+git reset --hard HEAD
+
 git pull origin main
 
 # 3. 更新后端

@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router';
+import { useAuthStore } from '../store/auth';
 
 const routes = [
   {
@@ -163,15 +164,38 @@ const router = createRouter({
 
 
 
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
   const token = localStorage.getItem('token');
   const requiresAuth = to.meta.requiresAuth !== false;
   
   if (requiresAuth && !token) {
     next('/login');
-  } else {
-    next();
+    return;
   }
+  
+  if (requiresAuth && token) {
+    const authStore = useAuthStore();
+    
+    if (authStore.checkAndClearExpiredToken()) {
+      next('/login');
+      return;
+    }
+    
+    if (!authStore.user) {
+      try {
+        await authStore.getCurrentUser();
+        if (!authStore.user) {
+          next('/login');
+          return;
+        }
+      } catch (error) {
+        next('/login');
+        return;
+      }
+    }
+  }
+  
+  next();
 });
 
 export default router;

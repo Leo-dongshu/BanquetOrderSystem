@@ -156,13 +156,12 @@ const logout = async () => {
 };
 
 onMounted(async () => {
-  if (!authStore.isAuthenticated && route.path !== '/login') {
-    authStore.token = 'test-token';
-    authStore.user = {
-      id: 1,
-      username: '管理员',
-      role: 'admin'
-    };
+  if (authStore.isAuthenticated && !authStore.user) {
+    try {
+      await authStore.getCurrentUser();
+    } catch (error) {
+      console.error('获取用户信息失败:', error);
+    }
   }
 });
 </script>

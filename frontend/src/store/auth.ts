@@ -1,6 +1,9 @@
 import { defineStore } from 'pinia';
 import api from '../api';
 
+const TOKEN_EXPIRY_KEY = 'token_expiry';
+const DEFAULT_EXPIRY_HOURS = 24;
+
 export const useAuthStore = defineStore('auth', {
   state: () => ({
     user: null as {
@@ -9,15 +12,37 @@ export const useAuthStore = defineStore('auth', {
       role: string;
     } | null,
     token: localStorage.getItem('token') || null,
+    tokenExpiry: localStorage.getItem(TOKEN_EXPIRY_KEY) ? parseInt(localStorage.getItem(TOKEN_EXPIRY_KEY)!) : null,
     loading: false,
     error: null as string | null
   }),
   getters: {
-    isAuthenticated: (state) => !!state.token,
+    isAuthenticated: (state) => !!state.token && !state.isTokenExpired,
+    isTokenExpired: (state) => {
+      if (!state.tokenExpiry) return false;
+      return Date.now() > state.tokenExpiry;
+    },
     currentUser: (state) => state.user
   },
   actions: {
+    setTokenExpiry() {
+      const expiryTime = Date.now() + DEFAULT_EXPIRY_HOURS * 60 * 60 * 1000;
+      this.tokenExpiry = expiryTime;
+      localStorage.setItem(TOKEN_EXPIRY_KEY, expiryTime.toString());
+    },
 
+    clearTokenExpiry() {
+      this.tokenExpiry = null;
+      localStorage.removeItem(TOKEN_EXPIRY_KEY);
+    },
+
+    checkAndClearExpiredToken() {
+      if (this.isTokenExpired) {
+        this.logout();
+        return true;
+      }
+      return false;
+    },
 
     async login(username: string, password: string) {
       this.loading = true;
@@ -32,8 +57,7 @@ export const useAuthStore = defineStore('auth', {
         this.token = token;
         this.user = user;
         localStorage.setItem('token', token);
-        
-
+        this.setTokenExpiry();
 
         api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
         
@@ -51,6 +75,7 @@ export const useAuthStore = defineStore('auth', {
     logout() {
       this.token = null;
       this.user = null;
+      this.clearTokenExpiry();
       localStorage.removeItem('token');
       delete api.defaults.headers.common['Authorization'];
     },
@@ -79,7 +104,11 @@ export const useAuthStore = defineStore('auth', {
 
 
     async getCurrentUser() {
-      if (!this.token) return;
+      if (!this.token) return null;
+      
+      if (this.checkAndClearExpiredToken()) {
+        return null;
+      }
       
       this.loading = true;
       this.error = null;
@@ -89,7 +118,9 @@ export const useAuthStore = defineStore('auth', {
         return response.data.user;
       } catch (error: any) {
         this.error = error.response?.data?.error || '获取用户信息失败';
-        this.logout();
+        if (error.response?.status === 401) {
+          this.logout();
+        }
         throw error;
       } finally {
         this.loading = false;
