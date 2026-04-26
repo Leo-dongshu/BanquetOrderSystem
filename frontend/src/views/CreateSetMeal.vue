@@ -231,9 +231,9 @@ const handleDishCheck = (dish: Dish & { checked?: boolean }) => {
 };
 
 const submitSetMeal = async () => {
-  console.log('submitSetMeal called');
-  console.log('setMealForm:', setMealForm);
-  console.log('selectedDishes:', selectedDishes.value);
+  // console.log('submitSetMeal called');
+  // console.log('setMealForm:', setMealForm);
+  // console.log('selectedDishes:', selectedDishes.value);
   
   // 重置所有错误标志
   Object.keys(formErrors).forEach(key => {
@@ -261,7 +261,7 @@ const submitSetMeal = async () => {
   }
 
   if (hasError) {
-    console.log('Validation failed');
+    // console.log('Validation failed');
     return;
   }
 
@@ -278,10 +278,10 @@ const submitSetMeal = async () => {
       }))
     };
     
-    console.log('setMealData:', setMealData);
+    // console.log('setMealData:', setMealData);
 
     await setMealStore.createSetMeal(setMealData);
-    console.log('Set meal created successfully');
+    // console.log('Set meal created successfully');
     router.push('/set-meals');
   } catch (error) {
     console.error('Error creating set meal:', error);

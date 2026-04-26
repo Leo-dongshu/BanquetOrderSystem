@@ -165,9 +165,9 @@ watch(() => selectedIngredients.value, (newValue) => {
 }, { deep: true });
 
 onMounted(async () => {
-  console.log('EditDish onMounted');
+  // console.log('EditDish onMounted');
   const dishId = Number(route.params.id);
-  console.log('dishId:', dishId);
+  // console.log('dishId:', dishId);
   
   // 并行获取菜品详情、配料、类别设置和厨具数据
   const [dishResponse, ingredientsResponse, categorySettingsResponse, kitchenwaresResponse] = await Promise.all([
@@ -180,19 +180,19 @@ onMounted(async () => {
   // 处理菜品详情
   if (dishId) {
     const dish = dishStore.currentDish;
-    console.log('Fetched dish:', dish);
+    // console.log('Fetched dish:', dish);
     if (dish) {
       dishForm.name = dish.name;
       dishForm.dishware = dish.dishware || '';
       dishForm.cookingMethod = dish.cookingMethod || '';
       dishForm.cookingDescription = dish.cookingDescription || '';
-      console.log('Dish form filled:', dishForm);
+      // console.log('Dish form filled:', dishForm);
       
       // 加载已选择的配料
       if (dish.dish_ingredients) {
-        console.log('Dish ingredients:', dish.dish_ingredients);
+        // console.log('Dish ingredients:', dish.dish_ingredients);
         selectedIngredients.value = dish.dish_ingredients.map(di => {
-          console.log('Processing ingredient:', di);
+          // console.log('Processing ingredient:', di);
           return {
             id: di.ingredient?.id || di.Ingredient?.id || 0,
             name: di.ingredient?.name || di.Ingredient?.name || '',
@@ -201,12 +201,12 @@ onMounted(async () => {
             quantity: di.quantity
           };
         });
-        console.log('Selected ingredients:', selectedIngredients.value);
+        // console.log('Selected ingredients:', selectedIngredients.value);
       } else {
-        console.log('No dish ingredients found');
+        // console.log('No dish ingredients found');
       }
     } else {
-      console.log('No dish found');
+      // console.log('No dish found');
     }
   }
   
@@ -215,7 +215,7 @@ onMounted(async () => {
     ...ingredient,
     quantity: ingredient.quantity || 1 // 使用quantity字段作为默认用量值
   }));
-  console.log('Ingredients fetched:', ingredients.value);
+  // console.log('Ingredients fetched:', ingredients.value);
   
   // 处理类别设置数据
   const categorySettings = categorySettingsResponse.data;
@@ -237,12 +237,12 @@ onMounted(async () => {
       .map((item: any) => ({ value: item.name, label: item.name }));
   } catch (error) {
     console.error('获取盘碗列表失败:', error);
-    // 如果获取失败，使用类别设置中的餐具类型作为后备
+    // 如果获取失败,使用类别设置中的餐具类型作为后备
     dishwareOptions.value = categorySettings
       .filter((item: any) => item.type === '餐具类型')
       .map((item: any) => ({ value: item.name, label: item.name }));
   }
-  console.log('Dishware options:', dishwareOptions.value);
+  // console.log('Dishware options:', dishwareOptions.value);
 });
 
 const navigateTo = (path: string) => {

@@ -6,15 +6,13 @@ import type {
   DishRequest,
   Ingredient,
   IngredientRequest,
-  IngredientStat,
-  OrderStat,
   CalendarData,
   SetMeal,
   SetMealRequest
 } from '../types';
 
 const api = axios.create({
-  baseURL: 'http://localhost:8082/api',
+  baseURL: '/api',  // 使用相对路径，通过Nginx代理到后端
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json'
@@ -26,10 +24,10 @@ const api = axios.create({
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token');
-    console.log('Token from localStorage:', token);
+    // console.log('Token from localStorage:', token);
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
-      console.log('Authorization header set:', config.headers.Authorization);
+      // console.log('Authorization header set:', config.headers.Authorization);
     }
     return config;
   },

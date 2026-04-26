@@ -732,10 +732,10 @@ const cancelAdjust = () => {
 };
 
 const confirmAdjust = () => {
-  // 确认调整，关闭对话框
+  // 确认调整,关闭对话框
   showAdjustDialog.value = false;
   // 保存调整后的菜品列表
-  console.log('调整后的菜品:', adjustedDishes.value);
+  // console.log('调整后的菜品:', adjustedDishes.value);
   // 调整后的菜品列表会在更新订单时一起保存
 };
 

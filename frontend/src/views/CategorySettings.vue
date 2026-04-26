@@ -396,11 +396,13 @@ const submitType = async () => {
   try {
     if (isEditingType.value) {
       await categoryTypeApi.updateCategoryType(typeForm.id, {
+        code: typeForm.name,
         name: typeForm.name
       });
       ElMessage.success('更新成功');
     } else {
       await categoryTypeApi.createCategoryType({
+        code: typeForm.name,
         name: typeForm.name
       });
       ElMessage.success('创建成功');

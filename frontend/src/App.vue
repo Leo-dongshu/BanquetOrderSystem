@@ -130,9 +130,9 @@
 import { computed, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { 
-  HomeFilled, List, Grid, Collection, 
-  Calendar, Star, User, SwitchButton, Tools, 
-  CollectionTag, Document, Shop, Van, Money, 
+  HomeFilled, List, Collection, 
+  Star, User, SwitchButton, Tools, 
+  Document, Shop, Van, Money, 
   Dish, Food, Monitor, UserFilled, Setting
 } from '@element-plus/icons-vue';
 import { useAuthStore } from './store/auth';

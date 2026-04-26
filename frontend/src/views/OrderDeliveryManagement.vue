@@ -312,12 +312,12 @@ const printConsumablesClearance = async (orderId: number) => {
       try {
         const orderDishesRes = await orderApi.getOrderDishes(orderId);
         const responseData = orderDishesRes.data || {};
-        console.log('订单菜品数据:', responseData);
+        // console.log('订单菜品数据:', responseData);
         
         const orderIngredients = responseData.ingredients || [];
-        console.log('订单食材数据:', orderIngredients);
+        // console.log('订单食材数据:', orderIngredients);
         
-        // 数据已经在后端处理过了，筛选出店铺食材
+        // 数据已经在后端处理过了,筛选出店铺食材
         const uniqueIngredients = new Map();
         orderIngredients.forEach((item: any) => {
           if (item.category === '店铺食材' && !uniqueIngredients.has(item.id)) {
@@ -332,7 +332,7 @@ const printConsumablesClearance = async (orderId: number) => {
           unit: item.unit
         }));
         
-        console.log('最终店铺食材:', ingredients);
+        // console.log('最终店铺食材:', ingredients);
       } catch (dishesError) {
         console.error('获取订单菜品食材失败:', dishesError);
         // 如果获取失败，使用所有店铺食材
@@ -590,7 +590,7 @@ const printDishPreparation = async (orderId: number) => {
       const response = await orderApi.getOrderDishes(orderId);
       const responseData = response.data || {};
       dishes = responseData.dishes || [];
-      console.log('获取到的菜品数据:', dishes);
+      // console.log('获取到的菜品数据:', dishes);
       if (!dishes || dishes.length === 0) {
         ElMessage.warning('订单没有菜品信息，无法打印菜品做法单');
         return;

@@ -160,7 +160,7 @@ const deletingId = ref(0);
 const authStore = useAuthStore();
 
 // API基础URL
-const API_BASE_URL = 'http://localhost:8082/api';
+const API_BASE_URL = '/api';
 
 // 获取车辆列表
 const fetchVehicles = async () => {

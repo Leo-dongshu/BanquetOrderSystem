@@ -182,18 +182,18 @@ let pieChart: any = null;
 
 const initPieChart = () => {
   if (!pieChartRef.value) {
-    console.log('pieChartRef.value is null');
+    // console.log('pieChartRef.value is null');
     return;
   }
   
   try {
     if (!pieChart) {
       pieChart = echarts.init(pieChartRef.value);
-      console.log('ECharts initialized');
+      // console.log('ECharts initialized');
     }
     
     if (feastTypeStats.value.length > 0) {
-      console.log('Setting chart options with', feastTypeStats.value);
+      // console.log('Setting chart options with', feastTypeStats.value);
       pieChart.setOption({
         tooltip: {
           trigger: 'item',
@@ -235,7 +235,7 @@ const initPieChart = () => {
         ]
       }, true);
     } else {
-      console.log('No feast type stats data');
+      // console.log('No feast type stats data');
     }
   } catch (e) {
     console.error('initPieChart error:', e);

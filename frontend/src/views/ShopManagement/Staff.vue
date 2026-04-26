@@ -133,21 +133,21 @@ const fetchCategorySettings = async () => {
   try {
     const response = await categorySettingsApi.getCategorySettings();
     const categories = response.data;
-    console.log('类别设置数据:', categories);
+    // console.log('类别设置数据:', categories);
     
     // 过滤出人员类型和职位类型
     const staffTypeData = categories.filter((item: any) => item.type === '人员类型');
     const positionTypeData = categories.filter((item: any) => item.type === '职位类型');
     
-    console.log('人员类型:', staffTypeData);
-    console.log('职位类型:', positionTypeData);
+    // console.log('人员类型:', staffTypeData);
+    // console.log('职位类型:', positionTypeData);
     
     // 更新数据
     positionTypes.value = positionTypeData;
     staffTypes.value = staffTypeData;
     
-    console.log('更新职位类型数据:', positionTypes.value);
-    console.log('更新人员类型数据:', staffTypes.value);
+    // console.log('更新职位类型数据:', positionTypes.value);
+    // console.log('更新人员类型数据:', staffTypes.value);
   } catch (error) {
     console.error('获取类别设置失败:', error);
     ElMessage.error('获取类别设置失败');
@@ -159,7 +159,7 @@ const fetchStaffList = async () => {
   try {
     const response = await staffApi.getStaffList();
     staffList.value = response.data;
-    console.log('获取人员列表成功:', staffList.value);
+    // console.log('获取人员列表成功:', staffList.value);
   } catch (error) {
     console.error('获取人员列表失败:', error);
     ElMessage.error('获取人员列表失败');
@@ -168,14 +168,14 @@ const fetchStaffList = async () => {
 
 // 生命周期钩子
 onMounted(() => {
-  console.log('=== 人员管理组件已挂载 ===');
-  console.log('开始获取类别设置数据...');
+  // console.log('=== 人员管理组件已挂载 ===');
+  // console.log('开始获取类别设置数据...');
   fetchCategorySettings().then(() => {
-    console.log('=== 获取类别设置数据完成 ===');
-    console.log('职位类型数量：', positionTypes.value.length);
-    console.log('职位类型数据：', positionTypes.value);
-    console.log('人员类型数量：', staffTypes.value.length);
-    console.log('人员类型数据：', staffTypes.value);
+    // console.log('=== 获取类别设置数据完成 ===');
+    // console.log('职位类型数量：', positionTypes.value.length);
+    // console.log('职位类型数据：', positionTypes.value);
+    // console.log('人员类型数量：', staffTypes.value.length);
+    // console.log('人员类型数据：', staffTypes.value);
     // 获取人员列表
     fetchStaffList();
   }).catch((error) => {
@@ -204,7 +204,7 @@ const addStaff = async () => {
       age: Number(staffForm.value.age), // 将年龄转换为数字
       registrationTime: new Date().toISOString().split('T')[0] // 使用当前日期作为登记时间
     });
-    console.log('添加人员成功:', response.data);
+    // console.log('添加人员成功:', response.data);
     // 更新人员列表
     await fetchStaffList();
     ElMessage.success('添加人员成功');
@@ -237,15 +237,15 @@ const closeAddDialog = () => {
 
 // 编辑人员
 const editStaff = (staff: any) => {
-  console.log('编辑人员:', staff);
-  // 这里可以添加编辑人员的逻辑，例如打开编辑对话框
+  // console.log('编辑人员:', staff);
+  // 这里可以添加编辑人员的逻辑,例如打开编辑对话框
 };
 
 // 删除人员
 const deleteStaff = async (id: number) => {
   try {
     await staffApi.deleteStaff(id);
-    console.log('删除人员成功:', id);
+    // console.log('删除人员成功:', id);
     // 更新人员列表
     await fetchStaffList();
     // 如果删除后当前页没有数据，且不是第一页，则跳转到上一页
