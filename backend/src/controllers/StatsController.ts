@@ -65,21 +65,90 @@ class StatsController {
   static async getDashboardStats(req: Request, res: Response) {
     try {
       const orders = await Order.findAll();
-      let totalOrders = orders.length;
-      let totalAmount = 0;
-      let pendingArrange = 0;
-      let pendingPayment = 0;
+      
+      // 获取当前月份的订单
+      const now = new Date();
+      const currentMonthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+      const currentMonthEnd = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+      
+      let total_orders = 0;
+      let total_amount = 0;
+      let monthly_amount = 0;
+      let total_discount = 0;
+      let monthly_discount = 0;
+      let total_revenue = 0;
+      let monthly_revenue = 0;
+      let pending_payment = 0;
+      let monthly_pending_payment = 0;
+      let total_tables = 0;
+      let pending_arrange = 0;
+      let arranged = 0;
+      let pending_payment_count = 0;
       let completed = 0;
+      let cancelled = 0;
+      
       orders.forEach(order => {
-        totalAmount += Number((order as any).total_amount) || 0;
-        if ((order as any).status === 1) pendingArrange++;
-        if ((order as any).status === 3) pendingPayment++;
-        if ((order as any).status === 9) completed++;
+        const orderData = order as any;
+        total_orders++;
+        
+        const orderAmount = Number(orderData.total_amount) || 0;
+        const orderDiscount = Number(orderData.discount_amount) || 0;
+        const orderPayment = Number(orderData.paid_amount) || 0;
+        
+        total_amount += orderAmount;
+        total_discount += orderDiscount;
+        total_revenue += orderPayment;
+        
+        total_tables += (orderData.formal_tables || 0) + (orderData.backup_tables || 0);
+        
+        // 检查订单是否在本月
+        const serviceDate = new Date(orderData.service_date);
+        const isCurrentMonth = serviceDate >= currentMonthStart && serviceDate <= currentMonthEnd;
+        
+        if (isCurrentMonth) {
+          monthly_amount += orderAmount;
+          monthly_discount += orderDiscount;
+          monthly_revenue += orderPayment;
+        }
+        
+        // 根据状态统计
+        if (orderData.status === 1) {
+          pending_arrange++;
+        } else if (orderData.status === 2) {
+          arranged++;
+        } else if (orderData.status === 3) {
+          pending_payment += (orderAmount - orderPayment);
+          if (isCurrentMonth) {
+            monthly_pending_payment += (orderAmount - orderPayment);
+          }
+          pending_payment_count++;
+        } else if (orderData.status === 9) {
+          completed++;
+        } else if (orderData.status === 0) {
+          cancelled++;
+        }
       });
-      res.json({ totalOrders, totalAmount, pendingArrange, pendingPayment, completed });
+      
+      res.json({
+        total_orders,
+        total_amount,
+        monthly_amount,
+        total_discount,
+        monthly_discount,
+        total_revenue,
+        monthly_revenue,
+        pending_payment,
+        monthly_pending_payment,
+        total_tables,
+        pending_arrange,
+        arranged,
+        pending_payment_count,
+        completed,
+        cancelled
+      });
     } catch (error) {
+      console.error('获取仪表板统计失败:', error);
       res.status(500).json({ error: '获取仪表板统计失败' });
-
     }
   }
 }

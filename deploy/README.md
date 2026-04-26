@@ -195,3 +195,214 @@ mysql -u banquet_user -p
 /var/www/BanquetOrderSystem/deploy/backup-db.sh
 ```
 
+### 前端开发
+
+```bash
+# 进入前端目录
+cd frontend
+
+# 开发环境启动
+npm run dev
+
+# 用生产环境配置开发（测试用）
+npm run dev:prod
+
+# 生产环境构建
+npm run build
+
+# 开发环境构建（测试用）
+npm run build:dev
+
+# 预览生产构建
+npm run preview
+```
+
+## 故障排查
+
+### 前端 API 请求 404
+
+**问题**：前端请求 API 返回 404
+
+**解决方法**：
+
+1. 检查 `.env.production` 中的 `VITE_API_BASE_URL` 配置是否正确
+2. 检查 Nginx 配置是否正确代理 `/api` 请求
+3. 检查后端服务是否正常运行
+
+### 跨域问题 (CORS)
+
+**问题**：浏览器提示跨域错误
+
+**解决方法**：
+
+1. 开发环境：确保 Vite 代理配置正确（已自动配置）
+2. 生产环境：
+   - 推荐方案：使用 Nginx 代理，前端和后端在同一域名下
+   - 备选方案：后端配置 CORS 允许前端域名访问
+
+### 修改环境变量不生效
+
+**解决方法**：
+
+1. 确保修改的是正确的环境文件（`.env.development` 或 `.env.production`）
+2. 修改后必须重启开发服务器或重新构建
+3. 环境变量必须以 `VITE_` 开头才能在前端代码中访问
+
+## 生产服务器代码更新
+
+### 更新前准备
+
+```bash
+# 进入项目目录
+cd /var/www/BanquetOrderSystem
+
+# 查看当前状态
+git status
+```
+
+### 完整更新流程（推荐）
+
+```bash
+# 1. 备份数据库（非常重要！）
+/var/www/BanquetOrderSystem/deploy/backup-db.sh
+
+# 2. 查看当前分支和状态
+cd /var/www/BanquetOrderSystem
+git status
+
+# 3. 拉取最新代码
+git pull origin main  # 或你的分支名
+
+# 4. 更新后端
+cd /var/www/BanquetOrderSystem/backend
+
+# 检查 package.json 是否有变更
+git diff HEAD~1 HEAD -- package.json
+# 如果有变更，重新安装依赖
+npm install
+
+# 重新构建后端
+npm run build
+
+# 重启后端服务
+pm2 restart banquet-backend
+
+# 5. 更新前端
+cd /var/www/BanquetOrderSystem/frontend
+
+# 检查 package.json 或环境变量是否有变更
+git diff HEAD~1 HEAD -- package.json .env.production
+# 如果 package.json 有变更，重新安装依赖
+npm install
+
+# 重新构建前端（使用生产环境配置）
+npm run build
+
+# 6. 验证更新
+# 检查后端服务状态
+pm2 status
+
+# 检查后端日志
+pm2 logs banquet-backend --lines 50
+
+# 检查 Nginx 状态
+systemctl status nginx
+```
+
+### 快速更新流程（仅代码变更，无依赖更新）
+
+```bash
+# 1. 备份数据库
+/var/www/BanquetOrderSystem/deploy/backup-db.sh
+
+# 2. 拉取代码
+cd /var/www/BanquetOrderSystem
+git pull origin main
+
+# 3. 更新后端
+cd backend
+npm run build
+pm2 restart banquet-backend
+
+# 4. 更新前端
+cd ../frontend
+npm run build
+
+# 5. 验证
+pm2 status
+```
+
+### 仅更新前端
+
+```bash
+# 1. 备份数据库
+/var/www/BanquetOrderSystem/deploy/backup-db.sh
+
+# 2. 拉取代码
+cd /var/www/BanquetOrderSystem
+git pull origin main
+
+# 3. 更新前端
+cd frontend
+npm run build
+
+# 前端不需要重启服务，构建完成后刷新浏览器即可
+```
+
+### 仅更新后端
+
+```bash
+# 1. 备份数据库
+/var/www/BanquetOrderSystem/deploy/backup-db.sh
+
+# 2. 拉取代码
+cd /var/www/BanquetOrderSystem
+git pull origin main
+
+# 3. 更新后端
+cd backend
+npm run build
+pm2 restart banquet-backend
+```
+
+### 回滚操作
+
+如果更新后出现问题，可以快速回滚：
+
+```bash
+# 1. 查看提交历史
+cd /var/www/BanquetOrderSystem
+git log --oneline -10
+
+# 2. 回滚到上一个版本
+git reset --hard HEAD~1
+
+# 3. 重新构建和重启服务（按照上面的更新流程）
+
+# 4. 如果需要恢复数据库
+# 找到最近的备份文件
+ls -la /var/backups/banquet/
+# 恢复数据库（根据实际文件名替换）
+mysql -u banquet_user -p banquet_order_system < /var/backups/banquet/banquet_order_system_YYYY-MM-DD_HH-MM.sql
+```
+
+### 更新检查清单
+
+每次更新前请确认：
+
+- [ ] 已备份数据库
+- [ ] 已查看 git diff，了解变更内容
+- [ ] 检查是否有数据库迁移需要执行
+- [ ] 检查是否有环境变量或配置文件变更
+
+### Git 分支管理建议
+
+```bash
+# 生产环境使用 main 分支
+git checkout main
+
+# 如果使用其他分支部署
+git checkout production
+git pull origin production
+```
+
