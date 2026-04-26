@@ -93,11 +93,12 @@ class StatsController {
         
         const orderAmount = Number(orderData.total_amount) || 0;
         const orderDiscount = Number(orderData.discount_amount) || 0;
+        const orderDeposit = Number(orderData.deposit) || 0;
         const orderPayment = Number(orderData.paid_amount) || 0;
         
         total_amount += orderAmount;
         total_discount += orderDiscount;
-        total_revenue += orderPayment;
+        total_revenue += (orderPayment + orderDeposit); // 已收款金额 = 已回款 + 预付定金
         
         total_tables += (orderData.formal_tables || 0) + (orderData.backup_tables || 0);
         
@@ -108,20 +109,34 @@ class StatsController {
         if (isCurrentMonth) {
           monthly_amount += orderAmount;
           monthly_discount += orderDiscount;
-          monthly_revenue += orderPayment;
+          monthly_revenue += (orderPayment + orderDeposit); // 本月已收款 = 本月已回款 + 本月预付定金
         }
+        
+        // 计算待回款金额：订单总价 - 预付定金 - 已回款 - 优惠金额
+        const orderPendingPayment = Math.max(0, orderAmount - orderDeposit - orderPayment - orderDiscount);
         
         // 根据状态统计
         if (orderData.status === 1) {
           pending_arrange++;
+          // 待安排的订单也计入待回款
+          pending_payment += orderPendingPayment;
+          if (isCurrentMonth) {
+            monthly_pending_payment += orderPendingPayment;
+          }
         } else if (orderData.status === 2) {
           arranged++;
-        } else if (orderData.status === 3) {
-          pending_payment += (orderAmount - orderPayment);
+          // 已安排的订单也计入待回款
+          pending_payment += orderPendingPayment;
           if (isCurrentMonth) {
-            monthly_pending_payment += (orderAmount - orderPayment);
+            monthly_pending_payment += orderPendingPayment;
           }
+        } else if (orderData.status === 3) {
           pending_payment_count++;
+          // 待回款状态的订单计入待回款
+          pending_payment += orderPendingPayment;
+          if (isCurrentMonth) {
+            monthly_pending_payment += orderPendingPayment;
+          }
         } else if (orderData.status === 9) {
           completed++;
         } else if (orderData.status === 0) {

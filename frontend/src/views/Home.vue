@@ -20,9 +20,9 @@
             <el-icon :size="32"><Wallet /></el-icon>
           </div>
           <div class="stat-content">
-            <div class="stat-label">待回款金额</div>
-            <div class="stat-value">¥{{ formatMoney(stats.pending_payment) }}</div>
-            <div class="stat-sub">本月: ¥{{ formatMoney(stats.monthly_pending_payment) }}</div>
+            <div class="stat-label">已收款总金额</div>
+            <div class="stat-value">¥{{ formatMoney(stats.total_revenue) }}</div>
+            <div class="stat-sub">待回款: ¥{{ formatMoney(stats.pending_payment) }}</div>
           </div>
         </div>
       </el-col>
@@ -45,6 +45,8 @@
             <div class="quick-actions">
               <el-button type="primary" size="small" @click="navigateTo('/orders/create')">创建订单</el-button>
               <el-button type="success" size="small" @click="navigateTo('/orders')">查看订单</el-button>
+              <el-button type="warning" size="small" @click="navigateTo('/orders/staff-arrangement')">人员安排</el-button>
+              <el-button type="info" size="small" @click="navigateTo('/orders/delivery-management')">发货管理</el-button>
             </div>
           </div>
         </div>
@@ -86,6 +88,10 @@
                 >
                   <span v-if="day.date" class="day-number">{{ day.day }}</span>
                   <div class="order-stats" v-if="day.orderCount > 0">
+                    <div class="stat-item total" v-if="day.totalTables > 0">
+                      <span class="stat-value">{{ day.totalTables }}</span>
+                      <span class="stat-label">总桌数</span>
+                    </div>
                     <div class="stat-item pending" v-if="day.pendingArrangeCount > 0">
                       <span class="stat-value">{{ day.pendingArrangeCount }}</span>
                       <span class="stat-label">待安排</span>
@@ -200,17 +206,17 @@ const initPieChart = () => {
           formatter: '{b}: {c}单 ({d}%)'
         },
         legend: {
-          orient: 'horizontal',
-          top: 0,
-          left: 'center'
+          orient: 'vertical',
+          top: 10,
+          left: 10
         },
         color: pieColors,
         series: [
           {
             name: '宴席类型',
             type: 'pie',
-            radius: ['40%', '70%'],
-            center: ['50%', '50%'],
+            radius: ['50%', '85%'],
+            center: ['60%', '50%'],
             avoidLabelOverlap: false,
             itemStyle: {
               borderRadius: 8,
@@ -338,6 +344,7 @@ const generateCalendar = () => {
     const arrangedCount = dayOrders.filter(order => order.status === 2).length;
     const pendingPaymentCount = isTodayOrPast ? dayOrders.filter(order => order.status === 3).length : 0;
     const completedCount = isTodayOrPast ? dayOrders.filter(order => order.status === 9).length : 0;
+    const totalTables = dayOrders.reduce((sum, order) => sum + (order.formal_tables || 0) + (order.backup_tables || 0), 0);
     
     days.push({
       date,
@@ -348,7 +355,8 @@ const generateCalendar = () => {
       pendingArrangeCount,
       arrangedCount,
       pendingPaymentCount,
-      completedCount
+      completedCount,
+      totalTables
     });
   }
   
@@ -373,6 +381,7 @@ const generateCalendar = () => {
     const arrangedCount = dayOrders.filter(order => order.status === 2).length;
     const pendingPaymentCount = isTodayOrPast ? dayOrders.filter(order => order.status === 3).length : 0;
     const completedCount = isTodayOrPast ? dayOrders.filter(order => order.status === 9).length : 0;
+    const totalTables = dayOrders.reduce((sum, order) => sum + (order.formal_tables || 0) + (order.backup_tables || 0), 0);
     
     days.push({
       date,
@@ -383,7 +392,8 @@ const generateCalendar = () => {
       pendingArrangeCount,
       arrangedCount,
       pendingPaymentCount,
-      completedCount
+      completedCount,
+      totalTables
     });
   }
   
@@ -407,6 +417,7 @@ const generateCalendar = () => {
     const arrangedCount = dayOrders.filter(order => order.status === 2).length;
     const pendingPaymentCount = isTodayOrPast ? dayOrders.filter(order => order.status === 3).length : 0;
     const completedCount = isTodayOrPast ? dayOrders.filter(order => order.status === 9).length : 0;
+    const totalTables = dayOrders.reduce((sum, order) => sum + (order.formal_tables || 0) + (order.backup_tables || 0), 0);
     
     days.push({
       date,
@@ -417,7 +428,8 @@ const generateCalendar = () => {
       pendingArrangeCount,
       arrangedCount,
       pendingPaymentCount,
-      completedCount
+      completedCount,
+      totalTables
     });
   }
   
@@ -522,6 +534,9 @@ onMounted(() => {
 .stat-content {
   flex: 1;
   text-align: left;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 }
 
 .stat-label {
@@ -543,8 +558,10 @@ onMounted(() => {
 
 .quick-actions {
   display: flex;
-  gap: 10px;
+  flex-wrap: wrap;
+  gap: 8px;
   margin-top: 10px;
+  justify-content: flex-start;
 }
 
 .quick-actions .el-button {
@@ -579,8 +596,11 @@ onMounted(() => {
 
 .chart-content {
   padding: 20px;
-  min-height: 660px;
-  height: 660px;
+  min-height: 400px;
+  height: 400px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .pie-chart {

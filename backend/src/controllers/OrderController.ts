@@ -61,7 +61,16 @@ class OrderController {
         orders.map(async (order) => {
           const orderData = order.toJSON();
           const latestStatusId = await OrderController.getLatestOrderStatus(order.id);
-          return { ...orderData, status: latestStatusId };
+          // 转换数值字段为数字类型
+          const numericOrderData = {
+            ...orderData,
+            total_amount: parseFloat(orderData.total_amount) || 0,
+            deposit: parseFloat(orderData.deposit) || 0,
+            paid_amount: parseFloat(orderData.paid_amount) || 0,
+            discount_amount: parseFloat(orderData.discount_amount) || 0,
+            status: latestStatusId
+          };
+          return numericOrderData;
         })
       );
 
@@ -146,7 +155,16 @@ class OrderController {
         }]
       });
       if (order) {
-        res.json(order);
+        const orderData = order.toJSON();
+        // 转换数值字段为数字类型
+        const numericOrderData = {
+          ...orderData,
+          total_amount: parseFloat(orderData.total_amount) || 0,
+          deposit: parseFloat(orderData.deposit) || 0,
+          paid_amount: parseFloat(orderData.paid_amount) || 0,
+          discount_amount: parseFloat(orderData.discount_amount) || 0
+        };
+        res.json(numericOrderData);
       } else {
         res.status(404).json({ error: '订单不存在' });
       }

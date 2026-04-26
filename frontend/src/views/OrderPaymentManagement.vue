@@ -57,6 +57,11 @@
               {{ formatMoney(scope.row.paid_amount) }}
             </template>
           </el-table-column>
+          <el-table-column label="已优惠金额" min-width="100" align="center">
+            <template #default="scope">
+              {{ formatMoney(scope.row.discount_amount || 0) }}
+            </template>
+          </el-table-column>
           <el-table-column label="待回款金额" min-width="120" align="center">
             <template #default="scope">
               {{ formatMoney((scope.row.total_amount || 0) - (scope.row.deposit || 0) - (scope.row.paid_amount || 0) - (scope.row.discount_amount || 0)) }}
