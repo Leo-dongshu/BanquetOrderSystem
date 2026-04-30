@@ -6,6 +6,22 @@ import { CategoryType, User, CategorySetting, OrderStatus } from './models';
 import bcrypt from 'bcrypt';
 import logger from './utils/logger';
 
+const initializeData = async () => {
+  try {
+    const cancelStatus = await OrderStatus.findByPk(-1);
+    if (!cancelStatus) {
+      await OrderStatus.create({
+        id: -1,
+        name: '退订',
+        description: '订单已退订'
+      });
+      logger.info('已初始化退订状态(id=-1)');
+    }
+  } catch (error) {
+    logger.error('初始化数据失败:', error);
+  }
+};
+
 const app = express();
 
 // 中间件
@@ -38,7 +54,7 @@ sequelize.authenticate()
       .then(() => {
         logger.info('数据库表结构同步完成');
         logger.info('开始执行数据初始化...');
-        logger.info('数据初始化脚本已暂时禁用');
+        initializeData();
         logger.info('服务器启动成功，监听端口 8082');
       })
       .catch((error) => {

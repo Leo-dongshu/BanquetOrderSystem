@@ -38,10 +38,13 @@
             <el-button type="primary" @click="handleSearch">搜索</el-button>
             <el-button @click="resetForm">重置</el-button>
           </el-form-item>
+          <el-form-item>
+            <el-checkbox v-model="showRecentDays" label="最近5天提醒" @change="handleRecentDaysChange" />
+          </el-form-item>
         </el-form>
       </div>
       <div class="order-staff-arrangement-content">
-        <el-table :data="pagedOrders" style="width: 100%" :fit="true">
+        <el-table :data="pagedOrders" style="width: 100%" :fit="true" :row-class-name="tableRowClassName">
           <el-table-column label="订单编号" min-width="180" align="center">
             <template #default="scope">
               {{ scope.row.order_number }}
@@ -353,16 +356,53 @@ const orderStore = useOrderStore();
 const loading = ref(false);
 const orders = ref<Order[]>([]);
 const showArrangeDialog = ref(false);
+const showRecentDays = ref(true);
+
+const isWithinRecentDays = (order: Order) => {
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const feastDate = new Date(order.feast_time);
+  const feastDay = new Date(feastDate.getFullYear(), feastDate.getMonth(), feastDate.getDate());
+  const diffDays = (feastDay.getTime() - today.getTime()) / (1000 * 60 * 60 * 24);
+  return diffDays >= 0 && diffDays < 5;
+};
+
+const sortedOrders = computed(() => {
+  const allSorted = [...orders.value].sort((a, b) => {
+    const timeA = a.feast_time ? new Date(a.feast_time).getTime() : 0;
+    const timeB = b.feast_time ? new Date(b.feast_time).getTime() : 0;
+    return timeB - timeA;
+  });
+
+  if (!showRecentDays.value) {
+    return allSorted;
+  }
+
+  const recent = allSorted.filter(order => isWithinRecentDays(order));
+  const others = allSorted.filter(order => !isWithinRecentDays(order));
+  return [...recent, ...others];
+});
 
 // 分页相关
 const currentPage = ref(1);
 const pageSize = ref(15);
-const total = computed(() => orders.value.length);
+const total = computed(() => sortedOrders.value.length);
 const pagedOrders = computed(() => {
   const startIndex = (currentPage.value - 1) * pageSize.value;
   const endIndex = startIndex + pageSize.value;
-  return orders.value.slice(startIndex, endIndex);
+  return sortedOrders.value.slice(startIndex, endIndex);
 });
+
+const handleRecentDaysChange = () => {
+  currentPage.value = 1;
+};
+
+const tableRowClassName = ({ row }: { row: Order }) => {
+  if (showRecentDays.value && isWithinRecentDays(row)) {
+    return 'recent-days-row';
+  }
+  return '';
+};
 
 // 搜索表单
 const searchForm = reactive({
@@ -473,7 +513,7 @@ const fetchOrders = async (params?: string) => {
   loading.value = true;
   try {
     await orderStore.fetchOrders(params);
-    orders.value = orderStore.orders;
+    orders.value = orderStore.orders.filter(order => order.status !== -1);
   } catch (error) {
     console.error('获取订单列表失败:', error);
   } finally {
@@ -1046,5 +1086,13 @@ const printOrder = async (orderId: number) => {
   min-height: 40px !important;
   white-space: pre-wrap !important;
   word-break: break-all !important;
+}
+
+:deep(.el-table .recent-days-row) {
+  --el-table-tr-bg-color: #fdf6ec;
+}
+
+:deep(.el-table .recent-days-row:hover > td) {
+  --el-table-tr-bg-color: #faecd8 !important;
 }
 </style>

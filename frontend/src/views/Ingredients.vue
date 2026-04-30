@@ -66,6 +66,7 @@ import { useIngredientStore } from '../store/ingredient';
 import { formatDate } from '../utils/dateFormat';
 import { categorySettingsApi } from '../api';
 import type { Ingredient } from '../types';
+import { ElMessageBox, ElMessage } from 'element-plus';
 
 const router = useRouter();
 const ingredientStore = useIngredientStore();
@@ -138,14 +139,22 @@ const editIngredient = (id: number) => {
 
 const deleteIngredient = async (id: number) => {
   try {
+    await ElMessageBox.confirm('确定要删除该配料吗？删除后不可恢复。', '删除确认', {
+      confirmButtonText: '确定删除',
+      cancelButtonText: '取消',
+      type: 'warning'
+    });
     await ingredientStore.deleteIngredient(id);
     ingredients.value = ingredientStore.ingredients;
-    // 如果删除后当前页没有数据，且不是第一页，则跳转到上一页
+    ElMessage.success('删除配料成功');
     if (pagedIngredients.value.length === 0 && currentPage.value > 1) {
       currentPage.value--;
     }
-  } catch (error) {
-    console.error(error);
+  } catch (error: any) {
+    if (error !== 'cancel') {
+      console.error(error);
+      ElMessage.error('删除配料失败');
+    }
   }
 };
 </script>

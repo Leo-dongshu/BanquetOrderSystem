@@ -66,6 +66,7 @@ export const orderApi = {
   getOrderById: (id: number) => api.get<Order>(`/orders/${id}`),
   updateOrder: (id: number, data: OrderRequest) => api.put<Order>(`/orders/${id}`, data),
   deleteOrder: (id: number) => api.delete(`/orders/${id}`),
+  cancelOrder: (id: number) => api.put(`/orders/${id}/cancel`),
   getOrderDishes: (orderId: number) => api.get<any[]>(`/orders/${orderId}/dishes`),
   confirmPayment: (orderId: number, data: { payment_amount: number; discount_amount: number }) => 
     api.post<Order>(`/orders/${orderId}/payment`, data),

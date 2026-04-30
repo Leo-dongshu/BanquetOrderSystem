@@ -89,24 +89,24 @@
                   <span v-if="day.date" class="day-number">{{ day.day }}</span>
                   <div class="order-stats" v-if="day.orderCount > 0">
                     <div class="stat-item total" v-if="day.totalTables > 0">
-                      <span class="stat-value">{{ day.totalTables }}</span>
                       <span class="stat-label">总桌数</span>
+                      <span class="stat-value">{{ day.totalTables }}</span>
                     </div>
                     <div class="stat-item pending" v-if="day.pendingArrangeCount > 0">
-                      <span class="stat-value">{{ day.pendingArrangeCount }}</span>
                       <span class="stat-label">待安排</span>
+                      <span class="stat-value">{{ day.pendingArrangeCount }}</span>
                     </div>
                     <div class="stat-item arranged" v-if="day.arrangedCount > 0">
-                      <span class="stat-value">{{ day.arrangedCount }}</span>
                       <span class="stat-label">已安排</span>
+                      <span class="stat-value">{{ day.arrangedCount }}</span>
                     </div>
                     <div class="stat-item payment" v-if="day.pendingPaymentCount > 0">
-                      <span class="stat-value">{{ day.pendingPaymentCount }}</span>
                       <span class="stat-label">待回款</span>
+                      <span class="stat-value">{{ day.pendingPaymentCount }}</span>
                     </div>
                     <div class="stat-item completed" v-if="day.completedCount > 0">
-                      <span class="stat-value">{{ day.completedCount }}</span>
                       <span class="stat-label">已完成</span>
+                      <span class="stat-value">{{ day.completedCount }}</span>
                     </div>
                   </div>
                 </div>
@@ -861,7 +861,7 @@ onMounted(() => {
 }
 
 .stat-item.total {
-  background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+  background: linear-gradient(135deg, #00b8d4 0%, #0097a7 100%);
   color: white;
 }
 

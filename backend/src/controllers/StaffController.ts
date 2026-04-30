@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { Staff } from '../models';
+import { Staff, Order } from '../models';
 
 class StaffController {
   static async getStaffList(req: Request, res: Response) {
@@ -88,11 +88,15 @@ class StaffController {
       if (!staff) {
         return res.status(404).json({ error: '人员不存在' });
       }
+
+      const referencedOrder = await Order.findOne({ where: { receiver_id: id } });
+      if (referencedOrder) {
+        return res.status(400).json({ error: '该人员已被订单引用，无法删除' });
+      }
+
       await staff.destroy();
       res.json({ message: '删除人员成功' });
     } catch (error) {
-
-
       res.status(500).json({ error: '删除人员失败' });
     }
   }

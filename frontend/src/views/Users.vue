@@ -46,6 +46,7 @@ import { useRouter } from 'vue-router';
 import { useUserStore } from '../store/user';
 import { useAuthStore } from '../store/auth';
 import { formatDate } from '../utils/dateFormat';
+import { ElMessageBox, ElMessage } from 'element-plus';
 
 const router = useRouter();
 const userStore = useUserStore();
@@ -86,10 +87,19 @@ const navigateTo = (path: string) => {
 
 const deleteUser = async (userId: number) => {
   try {
+    await ElMessageBox.confirm('确定要删除该用户吗？删除后不可恢复。', '删除确认', {
+      confirmButtonText: '确定删除',
+      cancelButtonText: '取消',
+      type: 'warning'
+    });
     await userStore.deleteUser(userId);
+    ElMessage.success('删除用户成功');
     await fetchUsers();
-  } catch (error) {
-    console.error(error);
+  } catch (error: any) {
+    if (error !== 'cancel') {
+      console.error(error);
+      ElMessage.error('删除用户失败');
+    }
   }
 };
 

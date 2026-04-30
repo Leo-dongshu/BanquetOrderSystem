@@ -549,6 +549,35 @@ class OrderController {
       res.status(500).json({ error: '获取订单菜品失败' });
     }
   }
+
+  static async cancelOrder(req: Request, res: Response) {
+    try {
+      const { id } = req.params;
+      const user = (req as any).user;
+      const username = user ? user.username : 'system';
+
+      const order = await Order.findByPk(id);
+      if (!order) {
+        return res.status(404).json({ error: '订单不存在' });
+      }
+
+      const latestStatusId = await OrderController.getLatestOrderStatus(order.id);
+      if (latestStatusId === -1) {
+        return res.status(400).json({ error: '该订单已退订' });
+      }
+
+      await OrderStatusHistory.create({
+        order_id: order.id,
+        status_id: -1,
+        created_by: username
+      });
+
+      res.json({ message: '订单退订成功' });
+    } catch (error) {
+      console.error('订单退订失败:', error);
+      res.status(500).json({ error: '订单退订失败' });
+    }
+  }
 }
 
 

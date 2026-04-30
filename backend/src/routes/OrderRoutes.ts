@@ -8,6 +8,7 @@ router.post('/orders', OrderController.createOrder);
 router.get('/orders/:id', OrderController.getOrderById);
 router.put('/orders/:id', OrderController.updateOrder);
 router.delete('/orders/:id', OrderController.deleteOrder);
+router.put('/orders/:id/cancel', OrderController.cancelOrder);
 
 // 人员安排相关路由
 router.post('/orders/staff-arrangement', OrderController.saveStaffArrangement);

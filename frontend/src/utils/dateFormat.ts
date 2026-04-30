@@ -20,7 +20,7 @@ export const formatMoney = (value: number | string | null | undefined): string =
 };
 
 export const getStatusType = (statusName: string): string => {
-  if (statusName === '已取消') return 'danger';
+  if (statusName === '已取消' || statusName === '退订') return 'danger';
   if (statusName === '待安排') return 'warning';
   if (statusName === '已安排') return 'primary';
   if (statusName === '已完成') return 'success';

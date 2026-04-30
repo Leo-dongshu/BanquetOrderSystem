@@ -7,12 +7,11 @@
         </div>
       </template>
       <div class="staff-content">
-        <el-button type="primary" class="add-staff-btn" @click="showAddDialog = true">
+        <el-button type="primary" class="add-staff-btn" @click="showAddDialogFn">
           <el-icon><Plus /></el-icon>
           <span>添加人员</span>
         </el-button>
         <el-table :data="pagedStaffList" style="width: 100%">
-          <!-- 隐藏id列 -->
           <el-table-column prop="id" label="ID" width="80" v-if="false" />
           <el-table-column prop="name" label="人员名称" />
           <el-table-column prop="gender" label="性别" />
@@ -46,47 +45,56 @@
       </div>
     </el-card>
 
-    <!-- 添加人员对话框 -->
     <el-dialog
-      v-model="showAddDialog"
-      title="添加人员"
+      v-model="dialogVisible"
+      :title="dialogTitle"
       width="500px"
     >
-      <el-form :model="staffForm" label-width="100px">
+      <el-form :model="form" label-width="100px">
         <el-form-item label="人员名称" required>
-          <el-input v-model="staffForm.name" placeholder="请输入人员名称" />
+          <el-input v-model="form.name" placeholder="请输入人员名称" />
         </el-form-item>
         <el-form-item label="性别" required>
-          <el-select v-model="staffForm.gender" placeholder="请选择性别">
+          <el-select v-model="form.gender" placeholder="请选择性别">
             <el-option label="男" value="男" />
             <el-option label="女" value="女" />
           </el-select>
         </el-form-item>
         <el-form-item label="年龄" required>
-          <el-input v-model.number="staffForm.age" type="number" placeholder="请输入年龄" />
+          <el-input v-model.number="form.age" type="number" placeholder="请输入年龄" />
         </el-form-item>
         <el-form-item label="手机号码" required>
-          <el-input v-model="staffForm.phone" placeholder="请输入手机号码" />
-          <template #error>
-            <div v-if="!validatePhone(staffForm.phone)">请输入有效的手机号码</div>
-          </template>
+          <el-input v-model="form.phone" placeholder="请输入手机号码" />
         </el-form-item>
         <el-form-item label="职位类型" required>
-          <el-select v-model="staffForm.positionType" placeholder="请选择职位类型">
+          <el-select v-model="form.positionType" placeholder="请选择职位类型">
             <el-option v-for="item in positionTypes" :key="item.id" :label="item.name" :value="item.name" />
           </el-select>
         </el-form-item>
         <el-form-item label="职位" required>
-          <el-select v-model="staffForm.position" placeholder="请选择职位">
+          <el-select v-model="form.position" placeholder="请选择职位">
             <el-option v-for="item in staffTypes" :key="item.id" :label="item.name" :value="item.name" />
           </el-select>
         </el-form-item>
-
       </el-form>
       <template #footer>
         <span class="dialog-footer">
-          <el-button @click="closeAddDialog">取消</el-button>
-          <el-button type="primary" @click="addStaff">确定</el-button>
+          <el-button @click="dialogVisible = false">取消</el-button>
+          <el-button type="primary" @click="saveStaff" :loading="saving">确定</el-button>
+        </span>
+      </template>
+    </el-dialog>
+
+    <el-dialog
+      v-model="deleteDialogVisible"
+      title="删除确认"
+      width="400px"
+    >
+      <span>确定要删除此人员吗？删除后不可恢复。</span>
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button @click="deleteDialogVisible = false">取消</el-button>
+          <el-button type="danger" @click="confirmDelete" :loading="deleting">确定删除</el-button>
         </span>
       </template>
     </el-dialog>
@@ -94,16 +102,14 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue';
+import { ref, reactive, onMounted, computed } from 'vue';
 import { Plus, Edit, Delete } from '@element-plus/icons-vue';
 import { categorySettingsApi, staffApi } from '../../api';
 import { formatDate } from '../../utils/dateFormat';
 import { ElMessage } from 'element-plus';
 
-// 人员数据
 const staffList = ref([]);
 
-// 分页相关
 const currentPage = ref(1);
 const pageSize = ref(15);
 const total = computed(() => staffList.value.length);
@@ -113,149 +119,160 @@ const pagedStaffList = computed(() => {
   return staffList.value.slice(startIndex, endIndex);
 });
 
-// 响应式数据
-const showAddDialog = ref(false);
-const staffForm = ref({
+const dialogVisible = ref(false);
+const deleteDialogVisible = ref(false);
+const dialogTitle = ref('添加人员');
+const saving = ref(false);
+const deleting = ref(false);
+const deletingId = ref(0);
+
+const form = reactive({
+  id: 0,
   name: '',
   gender: '',
-  age: '',
+  age: '' as string | number,
   phone: '',
   positionType: '',
   position: ''
 });
 
-// 类别数据
-const staffTypes = ref<any[]>([]); // 人员类型
-const positionTypes = ref<any[]>([]); // 职位类型
+const staffTypes = ref<any[]>([]);
+const positionTypes = ref<any[]>([]);
 
-// 获取类别设置数据
 const fetchCategorySettings = async () => {
   try {
     const response = await categorySettingsApi.getCategorySettings();
     const categories = response.data;
-    // console.log('类别设置数据:', categories);
-    
-    // 过滤出人员类型和职位类型
     const staffTypeData = categories.filter((item: any) => item.type === '人员类型');
     const positionTypeData = categories.filter((item: any) => item.type === '职位类型');
-    
-    // console.log('人员类型:', staffTypeData);
-    // console.log('职位类型:', positionTypeData);
-    
-    // 更新数据
     positionTypes.value = positionTypeData;
     staffTypes.value = staffTypeData;
-    
-    // console.log('更新职位类型数据:', positionTypes.value);
-    // console.log('更新人员类型数据:', staffTypes.value);
   } catch (error) {
     console.error('获取类别设置失败:', error);
     ElMessage.error('获取类别设置失败');
   }
 };
 
-// 获取人员列表
 const fetchStaffList = async () => {
   try {
     const response = await staffApi.getStaffList();
     staffList.value = response.data;
-    // console.log('获取人员列表成功:', staffList.value);
   } catch (error) {
     console.error('获取人员列表失败:', error);
     ElMessage.error('获取人员列表失败');
   }
 };
 
-// 生命周期钩子
 onMounted(() => {
-  // console.log('=== 人员管理组件已挂载 ===');
-  // console.log('开始获取类别设置数据...');
   fetchCategorySettings().then(() => {
-    // console.log('=== 获取类别设置数据完成 ===');
-    // console.log('职位类型数量：', positionTypes.value.length);
-    // console.log('职位类型数据：', positionTypes.value);
-    // console.log('人员类型数量：', staffTypes.value.length);
-    // console.log('人员类型数据：', staffTypes.value);
-    // 获取人员列表
     fetchStaffList();
   }).catch((error) => {
     console.error('获取类别设置数据失败：', error);
   });
 });
 
-// 添加人员
-const addStaff = async () => {
-  // 表单验证
-  if (!staffForm.value.name || !staffForm.value.gender || !staffForm.value.age || !staffForm.value.phone || !staffForm.value.position || !staffForm.value.positionType) {
-    ElMessage.warning('请填写完整信息');
-    return;
-  }
-  
-  // 手机号校验
-  if (!validatePhone(staffForm.value.phone)) {
-    ElMessage.warning('请输入有效的手机号码');
-    return;
-  }
-  
-  try {
-    // 调用API添加人员
-    const response = await staffApi.createStaff({
-      ...staffForm.value,
-      age: Number(staffForm.value.age), // 将年龄转换为数字
-      registrationTime: new Date().toISOString().split('T')[0] // 使用当前日期作为登记时间
-    });
-    // console.log('添加人员成功:', response.data);
-    // 更新人员列表
-    await fetchStaffList();
-    ElMessage.success('添加人员成功');
-    closeAddDialog();
-  } catch (error) {
-    console.error('添加人员失败:', error);
-    ElMessage.error('添加人员失败');
-  }
-};
-
-// 手机号校验
 const validatePhone = (phone: string) => {
   const phoneRegex = /^1[3-9]\d{9}$/;
   return phoneRegex.test(phone);
 };
 
-// 关闭添加对话框
-const closeAddDialog = () => {
-  showAddDialog.value = false;
-  // 重置表单
-  staffForm.value = {
-    name: '',
-    gender: '',
-    age: '',
-    phone: '',
-    positionType: '',
-    position: ''
-  };
+const resetForm = () => {
+  form.id = 0;
+  form.name = '';
+  form.gender = '';
+  form.age = '';
+  form.phone = '';
+  form.positionType = '';
+  form.position = '';
 };
 
-// 编辑人员
+const showAddDialogFn = () => {
+  dialogTitle.value = '添加人员';
+  resetForm();
+  dialogVisible.value = true;
+};
+
 const editStaff = (staff: any) => {
-  // console.log('编辑人员:', staff);
-  // 这里可以添加编辑人员的逻辑,例如打开编辑对话框
+  dialogTitle.value = '编辑人员';
+  form.id = staff.id;
+  form.name = staff.name;
+  form.gender = staff.gender;
+  form.age = staff.age;
+  form.phone = staff.phone;
+  form.positionType = staff.positionType;
+  form.position = staff.position;
+  dialogVisible.value = true;
 };
 
-// 删除人员
-const deleteStaff = async (id: number) => {
+const saveStaff = async () => {
+  if (!form.name || !form.gender || !form.age || !form.phone || !form.position || !form.positionType) {
+    ElMessage.warning('请填写完整信息');
+    return;
+  }
+
+  if (!validatePhone(form.phone)) {
+    ElMessage.warning('请输入有效的手机号码');
+    return;
+  }
+
   try {
-    await staffApi.deleteStaff(id);
-    // console.log('删除人员成功:', id);
-    // 更新人员列表
+    saving.value = true;
+
+    if (form.id === 0) {
+      await staffApi.createStaff({
+        name: form.name,
+        gender: form.gender,
+        age: Number(form.age),
+        phone: form.phone,
+        position: form.position,
+        positionType: form.positionType,
+        registrationTime: new Date().toISOString().split('T')[0]
+      });
+      ElMessage.success('添加人员成功');
+    } else {
+      await staffApi.updateStaff(form.id, {
+        name: form.name,
+        gender: form.gender,
+        age: Number(form.age),
+        phone: form.phone,
+        position: form.position,
+        positionType: form.positionType,
+        registrationTime: new Date().toISOString().split('T')[0]
+      });
+      ElMessage.success('更新人员成功');
+    }
+
+    dialogVisible.value = false;
     await fetchStaffList();
-    // 如果删除后当前页没有数据，且不是第一页，则跳转到上一页
+  } catch (error) {
+    console.error('保存人员失败:', error);
+    ElMessage.error(form.id === 0 ? '添加人员失败' : '更新人员失败');
+  } finally {
+    saving.value = false;
+  }
+};
+
+const deleteStaff = (id: number) => {
+  deletingId.value = id;
+  deleteDialogVisible.value = true;
+};
+
+const confirmDelete = async () => {
+  try {
+    deleting.value = true;
+    await staffApi.deleteStaff(deletingId.value);
+    ElMessage.success('删除人员成功');
+    deleteDialogVisible.value = false;
+    await fetchStaffList();
     if (pagedStaffList.value.length === 0 && currentPage.value > 1) {
       currentPage.value--;
     }
-    ElMessage.success('删除人员成功');
-  } catch (error) {
+  } catch (error: any) {
     console.error('删除人员失败:', error);
-    ElMessage.error('删除人员失败');
+    const errorMsg = error?.response?.data?.error || '删除人员失败';
+    ElMessage.error(errorMsg);
+  } finally {
+    deleting.value = false;
   }
 };
 

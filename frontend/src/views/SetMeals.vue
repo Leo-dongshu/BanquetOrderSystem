@@ -73,6 +73,7 @@ import { useRouter } from 'vue-router';
 import { useSetMealStore } from '../store/setMeal';
 import { formatDate } from '../utils/dateFormat';
 import type { SetMeal } from '../types';
+import { ElMessageBox, ElMessage } from 'element-plus';
 
 const router = useRouter();
 const setMealStore = useSetMealStore();
@@ -149,14 +150,22 @@ const editSetMeal = (id: number) => {
 
 const deleteSetMeal = async (id: number) => {
   try {
+    await ElMessageBox.confirm('确定要删除该套餐吗？删除后不可恢复。', '删除确认', {
+      confirmButtonText: '确定删除',
+      cancelButtonText: '取消',
+      type: 'warning'
+    });
     await setMealStore.deleteSetMeal(id);
     setMeals.value = setMealStore.setMeals;
-    // 如果删除后当前页没有数据，且不是第一页，则跳转到上一页
+    ElMessage.success('删除套餐成功');
     if (pagedSetMeals.value.length === 0 && currentPage.value > 1) {
       currentPage.value--;
     }
-  } catch (error) {
-    console.error(error);
+  } catch (error: any) {
+    if (error !== 'cancel') {
+      console.error(error);
+      ElMessage.error('删除套餐失败');
+    }
   }
 };
 </script>
