@@ -5,7 +5,6 @@ import OrderDish from './OrderDish';
 import DishIngredient from './DishIngredient';
 import SetMeal from './SetMeal';
 import SetMealDish from './SetMealDish';
-import OrderSetMeal from './OrderSetMeal';
 import User from './User';
 import CategorySetting from './CategorySetting';
 import CategoryType from './CategoryType';
@@ -24,7 +23,6 @@ export {
   DishIngredient,
   SetMeal,
   SetMealDish,
-  OrderSetMeal,
   User,
   CategorySetting,
   CategoryType,

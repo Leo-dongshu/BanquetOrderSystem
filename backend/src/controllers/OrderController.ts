@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { Order, OrderDish, Dish, OrderSetMeal, SetMeal, SetMealDish, OrderStaffArrangement, OrderStatus, OrderStatusHistory, Ingredient, DishIngredient } from '../models';
+import { Order, OrderDish, Dish, SetMeal, SetMealDish, OrderStaffArrangement, OrderStatus, OrderStatusHistory, Ingredient, DishIngredient } from '../models';
 import { Op } from 'sequelize';
 
 class OrderController {

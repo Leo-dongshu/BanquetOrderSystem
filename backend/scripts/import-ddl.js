@@ -38,7 +38,6 @@ async function importDDL() {
     const tablesToDrop = [
       'dish_ingredients',
       'order_dishes',
-      'order_set_meals',
       'set_meal_dishes',
       'order_staff_arrangements',
       'order_status_history',
@@ -93,7 +92,6 @@ async function importDDL() {
       'set_meal_dishes',
       'orders',
       'order_dishes',
-      'order_set_meals',
       'order_staff_arrangements',
       'order_status_history'
     ];
