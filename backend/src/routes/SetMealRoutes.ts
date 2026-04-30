@@ -8,6 +8,7 @@ router.get('/set-meals', SetMealController.getSetMeals);
 router.post('/set-meals', SetMealController.createSetMeal);
 router.get('/set-meals/:id', SetMealController.getSetMealById);
 router.put('/set-meals/:id', SetMealController.updateSetMeal);
+router.patch('/set-meals/:id/visibility', SetMealController.toggleVisibility);
 router.delete('/set-meals/:id', SetMealController.deleteSetMeal);
 
 export default router;

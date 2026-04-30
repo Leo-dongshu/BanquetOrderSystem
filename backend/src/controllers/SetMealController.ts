@@ -109,7 +109,7 @@ class SetMealController {
   static async updateSetMeal(req: Request, res: Response) {
     try {
       const { id } = req.params;
-      const { name, type, price, description, dishes } = req.body;
+      const { name, type, price, description, dishes, isVisible } = req.body;
       const user = (req as any).user;
       const username = user ? user.username : 'system';
       const setMeal = await SetMeal.findByPk(id);
@@ -126,6 +126,7 @@ class SetMealController {
         price: price !== undefined ? price : setMeal.price,
         description: description || setMeal.description,
         dishCount: dishCount,
+        isVisible: isVisible !== undefined ? isVisible : setMeal.isVisible,
         updatedBy: username
       });
 
@@ -181,6 +182,34 @@ class SetMealController {
       res.json({ message: '套餐删除成功' });
     } catch (error) {
       res.status(500).json({ error: '删除套餐失败' });
+    }
+  }
+
+  static async toggleVisibility(req: Request, res: Response) {
+    try {
+      const { id } = req.params;
+      const { isVisible } = req.body;
+      const setMeal = await SetMeal.findByPk(id);
+      if (!setMeal) {
+        return res.status(404).json({ error: '套餐不存在' });
+      }
+
+      await setMeal.update({ isVisible: isVisible !== undefined ? isVisible : !setMeal.isVisible });
+
+      const updatedSetMeal = await SetMeal.findByPk(setMeal.id, {
+        include: [{
+          model: SetMealDish,
+          as: 'set_meal_dishes',
+          include: [{
+            model: Dish,
+            as: 'dish'
+          }]
+        }]
+      });
+
+      res.json(updatedSetMeal);
+    } catch (error) {
+      res.status(500).json({ error: '更新上架状态失败' });
     }
   }
 }

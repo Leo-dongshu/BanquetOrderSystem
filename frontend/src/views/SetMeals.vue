@@ -36,7 +36,7 @@
           <el-table-column prop="dishCount" label="菜品数量" min-width="100" />
           <el-table-column label="是否上架" min-width="100">
             <template #default="scope">
-              <el-switch v-model="scope.row.isVisible" active-color="#13ce66" inactive-color="#ff4949" />
+              <el-switch v-model="scope.row.isVisible" active-color="#13ce66" inactive-color="#ff4949" @change="toggleVisibility(scope.row)" />
             </template>
           </el-table-column>
           <el-table-column label="修改时间" min-width="180">
@@ -74,6 +74,7 @@ import { useSetMealStore } from '../store/setMeal';
 import { formatDate } from '../utils/dateFormat';
 import type { SetMeal } from '../types';
 import { ElMessageBox, ElMessage } from 'element-plus';
+import { setMealApi } from '../api';
 
 const router = useRouter();
 const setMealStore = useSetMealStore();
@@ -146,6 +147,16 @@ const navigateTo = (path: string) => {
 
 const editSetMeal = (id: number) => {
   router.push(`/set-meals/edit/${id}`);
+};
+
+const toggleVisibility = async (setMeal: SetMeal) => {
+  try {
+    await setMealApi.toggleVisibility(setMeal.id, setMeal.isVisible);
+    ElMessage.success(setMeal.isVisible ? '已上架' : '已下架');
+  } catch (error) {
+    setMeal.isVisible = !setMeal.isVisible;
+    ElMessage.error('操作失败');
+  }
 };
 
 const deleteSetMeal = async (id: number) => {

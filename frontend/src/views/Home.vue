@@ -465,7 +465,7 @@ const generateCalendar = () => {
 const fetchCalendarData = async () => {
   try {
     const res = await orderApi.getOrders();
-    ordersForCalendar.value = res.data || [];
+    ordersForCalendar.value = (res.data || []).filter((order: any) => order.status !== -1);
     generateCalendar();
     fetchFeastTypeStats();
   } catch (error) {

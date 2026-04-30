@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 
-import { Order } from '../models';
+import { Order, OrderStatusHistory } from '../models';
 import { Op } from 'sequelize';
 
 class StatsController {
@@ -66,7 +66,18 @@ class StatsController {
     try {
       const orders = await Order.findAll();
       
-      // 获取当前月份的订单
+      const statusHistories = await OrderStatusHistory.findAll({
+        order: [['created_at', 'DESC']]
+      });
+      
+      const latestStatusMap = new Map<number, number>();
+      for (const history of statusHistories) {
+        const h = history as any;
+        if (!latestStatusMap.has(h.order_id)) {
+          latestStatusMap.set(h.order_id, h.status_id);
+        }
+      }
+      
       const now = new Date();
       const currentMonthStart = new Date(now.getFullYear(), now.getMonth(), 1);
       const currentMonthEnd = new Date(now.getFullYear(), now.getMonth() + 1, 0);
@@ -89,6 +100,13 @@ class StatsController {
       
       orders.forEach(order => {
         const orderData = order as any;
+        const orderStatus = latestStatusMap.get(orderData.id) ?? orderData.status;
+        
+        if (orderStatus === -1) {
+          cancelled++;
+          return;
+        }
+        
         total_orders++;
         
         const orderAmount = Number(orderData.total_amount) || 0;
@@ -116,31 +134,26 @@ class StatsController {
         const orderPendingPayment = Math.max(0, orderAmount - orderDeposit - orderPayment - orderDiscount);
         
         // 根据状态统计
-        if (orderData.status === 1) {
+        if (orderStatus === 1) {
           pending_arrange++;
-          // 待安排的订单也计入待回款
           pending_payment += orderPendingPayment;
           if (isCurrentMonth) {
             monthly_pending_payment += orderPendingPayment;
           }
-        } else if (orderData.status === 2) {
+        } else if (orderStatus === 2) {
           arranged++;
-          // 已安排的订单也计入待回款
           pending_payment += orderPendingPayment;
           if (isCurrentMonth) {
             monthly_pending_payment += orderPendingPayment;
           }
-        } else if (orderData.status === 3) {
+        } else if (orderStatus === 3) {
           pending_payment_count++;
-          // 待回款状态的订单计入待回款
           pending_payment += orderPendingPayment;
           if (isCurrentMonth) {
             monthly_pending_payment += orderPendingPayment;
           }
-        } else if (orderData.status === 9) {
+        } else if (orderStatus === 9) {
           completed++;
-        } else if (orderData.status === 0) {
-          cancelled++;
         }
       });
       

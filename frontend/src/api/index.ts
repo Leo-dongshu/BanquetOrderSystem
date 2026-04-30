@@ -132,6 +132,7 @@ export const setMealApi = {
   createSetMeal: (data: SetMealRequest) => api.post<SetMeal>('/set-meals', data),
   getSetMealById: (id: number) => api.get<SetMeal>(`/set-meals/${id}`),
   updateSetMeal: (id: number, data: SetMealRequest) => api.put<SetMeal>(`/set-meals/${id}`, data),
+  toggleVisibility: (id: number, isVisible: boolean) => api.patch<SetMeal>(`/set-meals/${id}/visibility`, { isVisible }),
   deleteSetMeal: (id: number) => api.delete(`/set-meals/${id}`)
 };
 

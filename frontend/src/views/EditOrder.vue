@@ -357,7 +357,7 @@ onMounted(async () => {
     staffApi.getStaffList()
   ]);
   
-  setMeals.value = setMealStore.setMeals;
+  setMeals.value = setMealStore.setMeals.filter((sm: SetMeal) => sm.isVisible);
   
   // 处理类别设置数据，过滤出酒席类型和支付方式的类别
   const categorySettings = categorySettingsResponse.data;
@@ -573,6 +573,13 @@ onMounted(async () => {
       orderForm.set_meal_id = order.set_meal_id;
       orderForm.set_meal_name = order.set_meal?.name || '';
       orderForm.set_meal_price = order.set_meal?.price?.toString() || '';
+      
+      if (order.set_meal_id && !setMeals.value.find(sm => sm.id === order.set_meal_id)) {
+        const currentSetMeal = setMealStore.setMeals.find(sm => sm.id === order.set_meal_id);
+        if (currentSetMeal) {
+          setMeals.value.push(currentSetMeal);
+        }
+      }
       orderForm.feast_time = order.feast_time;
       orderForm.feast_type = order.feast_type;
       orderForm.booking_days = order.booking_days;

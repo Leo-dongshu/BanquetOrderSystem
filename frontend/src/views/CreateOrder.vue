@@ -375,7 +375,7 @@ onMounted(async () => {
     staffApi.getStaffList()
   ]);
   
-  setMeals.value = setMealStore.setMeals;
+  setMeals.value = setMealStore.setMeals.filter((sm: SetMeal) => sm.isVisible);
   
   // 处理类别设置数据，过滤出酒席类型和支付方式的类别
   const categorySettings = categorySettingsResponse.data;
