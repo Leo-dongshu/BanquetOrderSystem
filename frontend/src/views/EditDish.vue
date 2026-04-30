@@ -13,15 +13,15 @@
           </el-form-item>
           <el-form-item label="选择配料" required :class="{ 'error-input': formErrors.ingredients }">
             <el-table :data="selectedIngredients" style="width: 100%">
-              <el-table-column prop="name" label="配料名称" width="300" />
-              <el-table-column prop="category" label="分类" width="150" />
-              <el-table-column label="用量" width="150">
+              <el-table-column prop="name" label="配料名称" width="200" align="center" />
+              <el-table-column prop="category" label="分类" width="180" align="center" />
+              <el-table-column label="用量" width="200" align="center">
                 <template #default="scope">
                   <el-input-number v-model="scope.row.quantity" :min="0.01" :step="0.01" />
                 </template>
               </el-table-column>
-              <el-table-column prop="unit" label="单位" width="100" />
-              <el-table-column label="操作" width="100">
+              <el-table-column prop="unit" label="单位" width="150" align="center" />
+              <el-table-column label="操作" width="200" align="center"> 
                 <template #default="scope">
                   <el-button type="danger" size="small" @click="removeIngredient(scope.row.id)">移除</el-button>
                 </template>
@@ -67,14 +67,14 @@
         </div>
         <el-table :data="filteredIngredients" style="width: 100%" @selection-change="handleSelectionChange">
           <el-table-column type="selection" width="55" />
-          <el-table-column prop="name" label="配料名称" min-width="300" />
-          <el-table-column prop="category" label="分类" min-width="180" />
-          <el-table-column label="用量" min-width="150">
+          <el-table-column prop="name" label="配料名称" min-width="150"  align="center" />
+          <el-table-column prop="category" label="分类" min-width="150" align="center" />
+          <el-table-column label="用量" min-width="150" align="center">
             <template #default="scope">
               <el-input-number v-model="scope.row.quantity" :min="0.01" :step="0.01" :default="1" style="width: 100%;" />
             </template>
           </el-table-column>
-          <el-table-column prop="unit" label="单位" min-width="120" />
+          <el-table-column prop="unit" label="单位" min-width="150" align="center" />
         </el-table>
       </div>
       <template #footer>

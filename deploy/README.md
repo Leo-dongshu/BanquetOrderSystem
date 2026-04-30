@@ -410,3 +410,49 @@ git checkout production
 git pull origin production
 ```
 
+## 数据库数据导入
+
+### 导入数据库文件
+
+保存数据到 `/var/www/import_data`目录
+
+```bash
+# 导入数据库表文件
+LOAD DATA LOCAL INFILE '/var/www/import_data/kitchenwares-2026_04_30.csv'
+INTO TABLE kitchenwares
+CHARACTER SET utf8mb4
+FIELDS TERMINATED BY ','
+LINES TERMINATED BY '\n'
+IGNORE 1 ROWS
+(name, type,quantity);
+
+
+LOAD DATA LOCAL INFILE '/var/www/import_data/ingredients-2026_04_30.csv'
+INTO TABLE ingredients
+CHARACTER SET utf8mb4
+FIELDS TERMINATED BY ','
+LINES TERMINATED BY '\r\n'
+IGNORE 1 ROWS
+(name, unit, quantity, category);
+```
+
+若上述命令执行失败，检查服务端是否开启 `LOAD DATA LOCAL INFILE` 功能:
+
+```bash
+# 先在 MySQL 里查看当前状态：
+SHOW GLOBAL VARIABLES LIKE 'local_infile';
+
+# 如果 Value 是 OFF，用root用户执行：
+SET GLOBAL local_infile = ON;
+
+# 验证一下是否生效：
+SHOW GLOBAL VARIABLES LIKE 'local_infile';
+```
+
+客户端连接时带上 --local-infile 参数，例如：
+
+```bash
+mysql -u banquet_user -p banquet_order_system --local-infile
+```
+
+再重新执行导入命令。

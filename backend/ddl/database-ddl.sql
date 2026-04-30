@@ -6,8 +6,8 @@ CREATE TABLE `category_settings` (
   `name` varchar(100) NOT NULL,
   `createdBy` varchar(50) NOT NULL DEFAULT 'system',
   `updatedBy` varchar(50) NOT NULL DEFAULT 'system',
-  `created_at` datetime NOT NULL,
-  `updated_at` datetime NOT NULL,
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -17,8 +17,8 @@ CREATE TABLE `category_types` (
   `name` varchar(100) NOT NULL COMMENT '类型名称（如：用餐类型）',
   `createdBy` varchar(50) NOT NULL DEFAULT 'system',
   `updatedBy` varchar(50) NOT NULL DEFAULT 'system',
-  `created_at` datetime NOT NULL,
-  `updated_at` datetime NOT NULL,
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -28,7 +28,7 @@ CREATE TABLE `dish_ingredients` (
   `dish_id` int(11) NOT NULL,
   `ingredient_id` int(11) NOT NULL,
   `quantity` decimal(10,2) NOT NULL,
-  `created_at` datetime DEFAULT NULL,
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `dish_id` (`dish_id`),
   KEY `ingredient_id` (`ingredient_id`),
@@ -43,10 +43,10 @@ CREATE TABLE `dishes` (
   `dishware` varchar(50) NOT NULL,
   `cookingMethod` varchar(50) NOT NULL,
   `cookingDescription` text,
-  `created_at` datetime DEFAULT NULL,
-  `updated_at` datetime DEFAULT NULL,
-  `createdBy` varchar(50) NOT NULL,
-  `updatedBy` varchar(50) NOT NULL,
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `createdBy` varchar(50) DEFAULT 'system',
+  `updatedBy` varchar(50) DEFAULT 'system',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -55,12 +55,12 @@ CREATE TABLE `ingredients` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
   `unit` varchar(20) NOT NULL,
-  `quantity` decimal(10,2) NOT NULL DEFAULT '1',
-  `category` varchar(50) NOT NULL DEFAULT 'grain-oil',
-  `created_at` datetime DEFAULT NULL,
-  `updated_at` datetime DEFAULT NULL,
-  `createdBy` varchar(50) NOT NULL,
-  `updatedBy` varchar(50) NOT NULL,
+  `quantity` decimal(10,2) NOT NULL DEFAULT 1,
+  `category` varchar(50) NOT NULL,
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `createdBy` varchar(50) DEFAULT 'system',
+  `updatedBy` varchar(50) DEFAULT 'system',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -70,7 +70,7 @@ CREATE TABLE `order_dishes` (
   `order_id` int(11) NOT NULL,
   `dish_id` int(11) NOT NULL,
   `quantity` int(11) NOT NULL,
-  `created_at` datetime DEFAULT NULL,
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `order_id` (`order_id`),
   KEY `dish_id` (`dish_id`),
@@ -91,10 +91,10 @@ CREATE TABLE `order_staff_arrangements` (
   `departure_time` datetime NOT NULL,
   `arrival_time` datetime NOT NULL,
   `remark` text,
-  `created_by` varchar(255) NOT NULL,
-  `updated_by` varchar(255) NOT NULL,
-  `created_at` datetime NOT NULL,
-  `updated_at` datetime NOT NULL,
+  `created_by` varchar(255) DEFAULT 'system',
+  `updated_by` varchar(255) DEFAULT 'system',
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `order_id` (`order_id`),
   CONSTRAINT `order_staff_arrangements_ibfk_1` FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`)
@@ -105,8 +105,8 @@ CREATE TABLE `order_status_history` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `order_id` int(11) NOT NULL,
   `status_id` int(11) NOT NULL,
-  `created_by` varchar(50) NOT NULL,
-  `created_at` datetime DEFAULT NULL,
+  `created_by` varchar(50) DEFAULT 'system',
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `order_id` (`order_id`),
   KEY `status_id` (`status_id`),
@@ -119,8 +119,8 @@ CREATE TABLE `order_statuses` (
   `id` int(11) NOT NULL DEFAULT '0',
   `name` varchar(50) NOT NULL,
   `description` text,
-  `created_at` datetime DEFAULT NULL,
-  `updated_at` datetime DEFAULT NULL,
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -147,10 +147,10 @@ CREATE TABLE `orders` (
   `backup_tables` int(11) NOT NULL,
   `total_amount` decimal(10,2) NOT NULL,
   `status` int(11) NOT NULL DEFAULT '1',
-  `created_at` datetime DEFAULT NULL,
-  `updated_at` datetime DEFAULT NULL,
-  `createdBy` varchar(50) NOT NULL,
-  `updatedBy` varchar(50) NOT NULL,
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `createdBy` varchar(50) DEFAULT 'system',
+  `updatedBy` varchar(50) DEFAULT 'system',
   PRIMARY KEY (`id`),
   UNIQUE KEY `order_number` (`order_number`),
   KEY `set_meal_id` (`set_meal_id`),
@@ -165,7 +165,7 @@ CREATE TABLE `set_meal_dishes` (
   `set_meal_id` int(11) NOT NULL,
   `dish_id` int(11) NOT NULL,
   `quantity` int(11) NOT NULL DEFAULT '1',
-  `created_at` datetime DEFAULT NULL,
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `set_meal_id` (`set_meal_id`),
   KEY `dish_id` (`dish_id`),
@@ -182,10 +182,10 @@ CREATE TABLE `set_meals` (
   `description` text,
   `dishCount` int(11) NOT NULL DEFAULT '0',
   `isVisible` tinyint(1) NOT NULL DEFAULT '1',
-  `created_at` datetime DEFAULT NULL,
-  `updated_at` datetime DEFAULT NULL,
-  `createdBy` varchar(50) NOT NULL,
-  `updatedBy` varchar(50) NOT NULL,
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `createdBy` varchar(50) DEFAULT 'system',
+  `updatedBy` varchar(50) DEFAULT 'system',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -201,8 +201,8 @@ CREATE TABLE `staff` (
   `registrationTime` date NOT NULL,
   `createdBy` varchar(50) NOT NULL DEFAULT 'system',
   `updatedBy` varchar(50) NOT NULL DEFAULT 'system',
-  `created_at` datetime NOT NULL,
-  `updated_at` datetime NOT NULL,
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -212,8 +212,8 @@ CREATE TABLE `users` (
   `username` varchar(50) NOT NULL,
   `password` varchar(100) NOT NULL,
   `role` varchar(20) NOT NULL DEFAULT 'user',
-  `created_at` datetime DEFAULT NULL,
-  `updated_at` datetime DEFAULT NULL,
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -225,10 +225,10 @@ CREATE TABLE `vehicles` (
   `type` varchar(255) NOT NULL,
   `brand` varchar(255) NOT NULL,
   `status` varchar(255) NOT NULL,
-  `created_by` varchar(255) NOT NULL,
-  `updated_by` varchar(255) NOT NULL,
-  `created_at` datetime NOT NULL,
-  `updated_at` datetime NOT NULL,
+  `created_by` varchar(255) DEFAULT 'system',
+  `updated_by` varchar(255) DEFAULT 'system',
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -240,7 +240,7 @@ CREATE TABLE `kitchenwares` (
   `quantity` int(11) NOT NULL DEFAULT 1 COMMENT '数量',
   `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
   `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `createdBy` varchar(50) NOT NULL COMMENT '创建人',
-  `updatedBy` varchar(50) NOT NULL COMMENT '修改人',
+  `createdBy` varchar(50) DEFAULT 'system' COMMENT '创建人',
+  `updatedBy` varchar(50) DEFAULT 'system' COMMENT '修改人',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

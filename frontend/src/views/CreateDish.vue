@@ -17,11 +17,11 @@
               <el-table-column prop="category" label="分类" width="150" align="center" />
               <el-table-column label="用量" width="200" align="center">
                 <template #default="scope">
-                  <el-input-number v-model="scope.row.quantity" :min="0.01" :step="0.01" />
+                  <el-input-number v-model="scope.row.quantity" :min="0.01" :step="0.01" style="width: 80%;" />
                 </template>
               </el-table-column>
               <el-table-column prop="unit" label="单位" width="120" align="center" />
-              <el-table-column label="操作" width="100" align="center">
+              <el-table-column label="操作" width="200" align="center">
                 <template #default="scope">
                   <el-button type="danger" size="small" @click="removeIngredient(scope.row.id)">移除</el-button>
                 </template>
@@ -56,7 +56,7 @@
     <el-dialog
       v-model="showIngredientDialog"
       title="选择配料"
-      width="900px"
+      width="1000px"
     >
       <div class="dialog-content">
         <div class="filter-section">
@@ -69,12 +69,12 @@
           <el-table-column type="selection" width="55" />
           <el-table-column prop="name" label="配料名称" min-width="200" align="center" />
           <el-table-column prop="category" label="分类" min-width="280" align="center" />
-          <el-table-column label="用量" min-width="150" align="center">
+          <el-table-column label="用量" min-width="200" align="center">
             <template #default="scope">
-              <el-input-number v-model="scope.row.quantity" :min="0.01" :step="0.01" :default="1" style="width: 100%;" />
+              <el-input-number v-model="scope.row.quantity" :min="0.01" :step="0.01" :default="1" style="width: 80%;" />
             </template>
           </el-table-column>
-          <el-table-column prop="unit" label="单位" min-width="120" align="center" />
+          <el-table-column prop="unit" label="单位" min-width="200" align="center" />
         </el-table>
       </div>
       <template #footer>

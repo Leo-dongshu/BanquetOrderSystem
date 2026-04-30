@@ -335,35 +335,34 @@ const printConsumablesClearance = async (orderId: number) => {
     const totalTables = order.formal_tables + order.backup_tables;
     
     // 从API获取数据
-    let dryGoods: Array<{ name: string; perTable: number; unit: string }> = [];
-    let ingredients: Array<{ name: string; perTable: number; unit: string }> = [];
+    let dryGoods: Array<{ name: string; perTable: number; totalQuantity?: number; unit: string }> = [];
+    let ingredients: Array<{ name: string; perTable: number; totalQuantity?: number; unit: string }> = [];
     let disposableItems: Array<{ name: string; perTable: number }> = [];
     
     try {
-      // 获取干货类数据
-      const dryGoodsRes = await ingredientApi.getIngredients('干货类');
-      dryGoods = (dryGoodsRes.data || []).map((item: Ingredient) => ({
-        name: item.name,
-        perTable: Number(item.quantity),
-        unit: item.unit
-      }));
-      
-      // 获取店铺食材数据 - 只获取订单中菜品对应的食材
       try {
         const orderDishesRes = await orderApi.getOrderDishes(orderId);
         const responseData = orderDishesRes.data || {};
-        // console.log('订单菜品数据:', responseData);
         
         const orderIngredients = responseData.ingredients || [];
-        // console.log('订单食材数据:', orderIngredients);
         
-        // 数据已经在后端处理过了,筛选出店铺食材
+        const uniqueDryGoods = new Map();
         const uniqueIngredients = new Map();
         orderIngredients.forEach((item: any) => {
+          if (item.category === '干货类' && !uniqueDryGoods.has(item.id)) {
+            uniqueDryGoods.set(item.id, item);
+          }
           if (item.category === '店铺食材' && !uniqueIngredients.has(item.id)) {
             uniqueIngredients.set(item.id, item);
           }
         });
+        
+        dryGoods = Array.from(uniqueDryGoods.values()).map((item: any) => ({
+          name: item.name,
+          perTable: Number(item.perTable),
+          totalQuantity: Number(item.totalQuantity),
+          unit: item.unit
+        }));
         
         ingredients = Array.from(uniqueIngredients.values()).map((item: any) => ({
           name: item.name,
@@ -371,21 +370,24 @@ const printConsumablesClearance = async (orderId: number) => {
           totalQuantity: Number(item.totalQuantity),
           unit: item.unit
         }));
-        
-        // console.log('最终店铺食材:', ingredients);
       } catch (dishesError) {
         console.error('获取订单菜品食材失败:', dishesError);
-        // 如果获取失败，使用所有店铺食材
         try {
+          const dryGoodsRes = await ingredientApi.getIngredients('干货类');
+          dryGoods = (dryGoodsRes.data || []).map((item: Ingredient) => ({
+            name: item.name,
+            perTable: Number(item.quantity),
+            unit: item.unit
+          }));
           const ingredientsRes = await ingredientApi.getIngredients('店铺食材');
-          const totalTables = order.formal_tables + order.backup_tables;
           ingredients = (ingredientsRes.data || []).map((item: Ingredient) => ({
             name: item.name,
             perTable: Number(item.quantity),
             unit: item.unit
           }));
         } catch (fallbackError) {
-          console.error('获取店铺食材失败:', fallbackError);
+          console.error('获取食材失败:', fallbackError);
+          dryGoods = [];
           ingredients = [];
         }
       }
@@ -899,9 +901,9 @@ const exportSupplierMarketTable = async (orderId: number) => {
             <td style="font-weight: bold;">酒席桌数</td>
             <td colspan="3">${`正式：${order.formal_tables}，备用：${order.backup_tables}`}</td>
             <td colspan="2" style="font-weight: bold;">配送日期</td>
-            <td colspan="3">${order.feast_time ? formatDate(new Date(order.feast_time).setHours(12, 30, 0, 0)) : ''}</td>
+            <td colspan="3">${order.feast_time ? formatDate(new Date(new Date(order.feast_time).setHours(5, 0, 0, 0))) : ''}</td>
             <td style="font-weight: bold;">送货地址</td>
-            <td colspan="3">佰巧宴（新干店）</td>
+            <td colspan="3">门店</td>
             <td colspan="2" style="font-weight: bold;">酒席类型</td>
             <td colspan="3">${order.feast_type || '其他'}</td>
           </tr>

@@ -44,7 +44,6 @@
             <div class="stat-label">快捷操作</div>
             <div class="quick-actions">
               <el-button type="primary" size="small" @click="navigateTo('/orders/create')">创建订单</el-button>
-              <el-button type="success" size="small" @click="navigateTo('/orders')">查看订单</el-button>
               <el-button type="warning" size="small" @click="navigateTo('/orders/staff-arrangement')">人员安排</el-button>
               <el-button type="info" size="small" @click="navigateTo('/orders/delivery-management')">发货管理</el-button>
             </div>
@@ -186,20 +185,19 @@ const pieColors = ['#5470c6', '#91cc75', '#fac858', '#ee6666', '#73c0de', '#3ba2
 const pieChartRef = ref<HTMLElement>();
 let pieChart: any = null;
 
+const hoveredFeastType = ref('');
+
 const initPieChart = () => {
   if (!pieChartRef.value) {
-    // console.log('pieChartRef.value is null');
     return;
   }
   
   try {
     if (!pieChart) {
       pieChart = echarts.init(pieChartRef.value);
-      // console.log('ECharts initialized');
     }
     
     if (feastTypeStats.value.length > 0) {
-      // console.log('Setting chart options with', feastTypeStats.value);
       pieChart.setOption({
         tooltip: {
           trigger: 'item',
@@ -207,10 +205,31 @@ const initPieChart = () => {
         },
         legend: {
           orient: 'vertical',
-          top: 10,
-          left: 10
+          top: 0,
+          left: 0,
+          itemWidth: 12,
+          itemHeight: 12,
+          itemGap: 10,
+          textStyle: {
+            fontSize: 12,
+            color: '#606266'
+          }
         },
         color: pieColors,
+        graphic: hoveredFeastType.value ? [
+          {
+            type: 'text',
+            left: 'center',
+            top: 'center',
+            style: {
+              text: hoveredFeastType.value,
+              textAlign: 'center',
+              fill: '#303133',
+              fontSize: 16,
+              fontWeight: 'bold'
+            }
+          }
+        ] : [],
         series: [
           {
             name: '宴席类型',
@@ -228,9 +247,7 @@ const initPieChart = () => {
             },
             emphasis: {
               label: {
-                show: true,
-                fontSize: 14,
-                fontWeight: 'bold'
+                show: false
               }
             },
             labelLine: {
@@ -240,8 +257,17 @@ const initPieChart = () => {
           }
         ]
       }, true);
-    } else {
-      // console.log('No feast type stats data');
+
+      // pieChart.off('mouseover');
+      // pieChart.off('mouseout');
+      // pieChart.on('mouseover', (params: any) => {
+      //   hoveredFeastType.value = params.name;
+      //   initPieChart();
+      // });
+      // pieChart.on('mouseout', () => {
+      //   hoveredFeastType.value = '';
+      //   initPieChart();
+      // });
     }
   } catch (e) {
     console.error('initPieChart error:', e);
