@@ -410,11 +410,11 @@ const printConsumablesClearance = async (orderId: number) => {
         <tr>
           <td style="padding: 8px; border: 1px solid #000; text-align: center;">${dryGoods[i]?.name || ''}</td>
           <td style="padding: 8px; border: 1px solid #000; text-align: center;">${dryGoods[i]?.perTable || ''}</td>
-          <td style="padding: 8px; border: 1px solid #000; text-align: center;">${dryGoods[i] ? dryGoods[i].totalQuantity || (dryGoods[i].perTable * totalTables).toFixed(1) : ''}</td>
+          <td style="padding: 8px; border: 1px solid #000; text-align: center;">${dryGoods[i] ? ((dryGoods[i].totalQuantity ?? (dryGoods[i].perTable * totalTables))).toFixed(2) : ''}</td>
           <td style="padding: 8px; border: 1px solid #000; text-align: center;">${dryGoods[i]?.unit || ''}</td>
           <td style="padding: 8px; border: 1px solid #000; text-align: center;">${dryGoods[i + 1]?.name || ''}</td>
           <td style="padding: 8px; border: 1px solid #000; text-align: center;">${dryGoods[i + 1]?.perTable || ''}</td>
-          <td style="padding: 8px; border: 1px solid #000; text-align: center;">${dryGoods[i + 1] ? dryGoods[i + 1].totalQuantity || (dryGoods[i + 1].perTable * totalTables).toFixed(1) : ''}</td>
+          <td style="padding: 8px; border: 1px solid #000; text-align: center;">${dryGoods[i + 1] ? ((dryGoods[i + 1].totalQuantity ?? (dryGoods[i + 1].perTable * totalTables))).toFixed(2) : ''}</td>
           <td style="padding: 8px; border: 1px solid #000; text-align: center;">${dryGoods[i + 1]?.unit || ''}</td>
         </tr>
       `;
@@ -427,11 +427,11 @@ const printConsumablesClearance = async (orderId: number) => {
         <tr>
           <td style="padding: 8px; border: 1px solid #000; text-align: center;">${ingredients[i]?.name || ''}</td>
           <td style="padding: 8px; border: 1px solid #000; text-align: center;">${ingredients[i]?.perTable || ''}</td>
-          <td style="padding: 8px; border: 1px solid #000; text-align: center;">${ingredients[i]?.totalQuantity ? ingredients[i].totalQuantity.toFixed(1) : ''}</td>
+          <td style="padding: 8px; border: 1px solid #000; text-align: center;">${ingredients[i]?.totalQuantity ? ingredients[i].totalQuantity.toFixed(2) : ''}</td>
           <td style="padding: 8px; border: 1px solid #000; text-align: center;">${ingredients[i]?.unit || ''}</td>
           <td style="padding: 8px; border: 1px solid #000; text-align: center;">${ingredients[i + 1]?.name || ''}</td>
           <td style="padding: 8px; border: 1px solid #000; text-align: center;">${ingredients[i + 1]?.perTable || ''}</td>
-          <td style="padding: 8px; border: 1px solid #000; text-align: center;">${ingredients[i + 1]?.totalQuantity ? ingredients[i + 1].totalQuantity.toFixed(1) : ''}</td>
+          <td style="padding: 8px; border: 1px solid #000; text-align: center;">${ingredients[i + 1]?.totalQuantity ? ingredients[i + 1].totalQuantity.toFixed(2) : ''}</td>
           <td style="padding: 8px; border: 1px solid #000; text-align: center;">${ingredients[i + 1]?.unit || ''}</td>
         </tr>
       `;
@@ -444,10 +444,10 @@ const printConsumablesClearance = async (orderId: number) => {
         <tr>
           <td style="padding: 8px; border: 1px solid #000; text-align: center;">${disposableItems[i]?.name || ''}</td>
           <td style="padding: 8px; border: 1px solid #000; text-align: center;">${disposableItems[i]?.perTable || ''}</td>
-          <td style="padding: 8px; border: 1px solid #000; text-align: center;">${disposableItems[i] ? (disposableItems[i].perTable * totalTables).toFixed(1) : ''}</td>
+          <td style="padding: 8px; border: 1px solid #000; text-align: center;">${disposableItems[i] ? (disposableItems[i].perTable * totalTables).toFixed(2) : ''}</td>
           <td style="padding: 8px; border: 1px solid #000; text-align: center;">${disposableItems[i + 1]?.name || ''}</td>
           <td style="padding: 8px; border: 1px solid #000; text-align: center;">${disposableItems[i + 1]?.perTable || ''}</td>
-          <td style="padding: 8px; border: 1px solid #000; text-align: center;">${disposableItems[i + 1] ? (disposableItems[i + 1].perTable * totalTables).toFixed(1) : ''}</td>
+          <td style="padding: 8px; border: 1px solid #000; text-align: center;">${disposableItems[i + 1] ? (disposableItems[i + 1].perTable * totalTables).toFixed(2) : ''}</td>
         </tr>
       `;
     }
