@@ -10,8 +10,8 @@
         <div class="logo">
           <el-icon :size="40"><Dish /></el-icon>
         </div>
-        <h1 class="title">流水宴席酒店订单管理系统</h1>
-        <p class="subtitle">Banquet Order Management System</p>
+        <h1 class="title">宴席信息管理系统</h1>
+        <!-- <p class="subtitle">Banquet Order Management System</p> -->
       </div>
       <el-form :model="loginForm" @submit.prevent="login" class="login-form">
         <el-form-item>
@@ -33,6 +33,7 @@
             @keyup.enter="login"
           />
         </el-form-item>
+        <br><br>
         <el-form-item>
           <el-button 
             type="primary" 
@@ -45,9 +46,9 @@
           </el-button>
         </el-form-item>
       </el-form>
-      <div class="login-footer">
-        <span>© 2024 流水宴席酒店管理系统</span>
-      </div>
+      <!-- <div class="login-footer"> -->
+        <!-- <span>宴席信息管理系统</span> -->
+      <!-- </div> -->
     </div>
   </div>
 </template>

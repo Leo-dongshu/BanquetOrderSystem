@@ -40,7 +40,7 @@ app.use(routes);
 
 // 测试端点
 app.get('/', (req, res) => {
-  res.json({ message: '流水宴席酒店订单管理系统 API' });
+  res.json({ message: '宴席信息管理系统 API' });
 });
 
 

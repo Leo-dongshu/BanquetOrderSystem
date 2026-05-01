@@ -1,7 +1,7 @@
 {
   "name": "backend",
   "version": "1.0.0",
-  "description": "流水宴席酒店订单管理系统后端",
+  "description": "宴席信息管理系统后端",
   "main": "dist/main.js",
   "scripts": {
     "dev": "chcp 65001 && nodemon --exec ts-node src/main.ts",

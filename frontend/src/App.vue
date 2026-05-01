@@ -7,7 +7,7 @@
             <div class="logo">
               <el-icon :size="28"><Dish /></el-icon>
             </div>
-            <span class="logo-text">流水宴席酒店订单管理系统</span>
+            <span class="logo-text">宴席信息管理系统</span>
           </div>
           <div class="header-right">
             <div class="user-info" v-if="authStore.isAuthenticated">
